@@ -1,0 +1,9 @@
+User-agent: *
+Disallow: /admin/
+Disallow: /stats/
+Disallow: /signup/
+Disallow: /*ajax*/
+Disallow: /socialauth/*
+Disallow: /social/*
+Disallow: /ajax_document_highlight/
+Disallow: /you/complete_profile/

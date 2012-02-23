@@ -1,0 +1,54 @@
+from bundle_config import config
+
+DATABASES = {
+    'default': {
+        'ENGINE': 'django.db.backends.mysql',
+        'HOST': config['mysql']['host'],
+        'PORT': int(config['mysql']['port']),
+        'USER': config['mysql']['username'],
+        'PASSWORD': config['mysql']['password'],
+        'NAME': config['mysql']['database'],
+        'OPTIONS': {
+            'init_command': 'SET storage_engine=INNODB',
+        },
+    },
+}
+
+EMAIL_HOST = config['email']['host']
+EMAIL_PORT = int(config['email']['port'])
+EMAIL_HOST_USER = config['email']['username']
+EMAIL_HOST_PASSWORD = config['email']['password']
+EMAIL_USE_TLS = bool(config['email']['use_tls'])
+
+CACHES = {
+    'default': {
+        'BACKEND': 'django.core.cache.backends.memcached.PyLibMCCache',
+        'LOCATION': '%s:%s' % (config['memcached']['host'], config['memcached']['port']),
+        'KEY_PREFIX': '<%= name %>',
+    }
+}
+
+
+
+HAYSTACK_SOLR_URL = config['solr']['path']
+SEARCH_QUEUE_NAME = 'haystack_search_queue:<%= name %>'
+
+QUEUE_REDIS_CONNECTION = '%s:%s' % (config['redis']['host'], config['redis']['port'])
+
+SENTRY_KEY = '586d50090a48226'
+SENTRY_SERVERS = ('http://valholl.hyperweek.com/sentry/api/store/',)
+
+MEDIA_ROOT = '/mnt/%s/<%= name %>' % config['s3']['bucket']
+MEDIA_URL = 'http://%s.s3.amazonaws.com/<%= name %>/' % config['s3']['bucket']
+
+STATIC_URL = "http://<%= domain %>/static/"
+COMPRESS_URL = STATIC_URL
+ADMIN_MEDIA_PREFIX = STATIC_URL + 'grappelli/'
+
+#GA_ID = 'UA-551841-8'
+
+# DEBUG
+STATIC_URL = "http://<%= domain %>:8080/static/"
+COMPRESS_URL = STATIC_URL
+ADMIN_MEDIA_PREFIX = STATIC_URL + 'grappelli/'
+# --//--

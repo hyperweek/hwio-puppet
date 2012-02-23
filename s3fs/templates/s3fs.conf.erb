@@ -1,0 +1,8 @@
+description "Mount Amazon S3 file system on system start"
+
+start on (local-filesystems and net-device-up IFACE!=lo)
+stop on runlevel [016]
+
+respawn
+
+exec /usr/local/bin/s3fs -f <%= name %> -o passwd_file=<%= passwd_file %> -o allow_other -o default_acl=<%= default_acl %> <%= mountpoint %> -o use_cache=<%= cache_dir %>

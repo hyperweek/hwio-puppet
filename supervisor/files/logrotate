@@ -1,0 +1,8 @@
+/var/log/supervisor/*.log {
+  rotate 5
+  daily
+  compress
+  postrotate
+      /usr/bin/killall -USR2 supervisord
+  endscript
+}

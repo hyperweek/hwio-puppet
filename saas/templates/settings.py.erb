@@ -1,0 +1,76 @@
+# -*- coding: utf-8 -*-
+import os
+
+# os.environ['DJANGO_PROJECT'] = os.path.basename(os.path.dirname(__file__))
+os.environ['DJANGO_PROJECT'] = '<%= name %>'
+os.environ['ROOT_DIR'] = os.path.abspath(os.path.dirname(__file__))
+
+## Import our defaults (globals)
+
+from hyperweek.conf.settings.default import *
+
+## Inherit from environment specifics
+
+DJANGO_CONF = os.environ.get('DJANGO_CONF', 'default')
+if DJANGO_CONF != 'default':
+    module = __import__(DJANGO_CONF, globals(), locals(), ['*'])
+    for k in dir(module):
+        if k.startswith('__'):
+            # Skip module level properties like __module__, __name__,
+            # because Django use it to load settings file.
+            pass
+        locals()[k] = getattr(module, k)
+
+## Define our project default
+
+SECRET_KEY = '<%= secret_key %>'
+ROOT_URLCONF = 'hyperweek.urls'
+
+## Import local settings
+
+try:
+    from local_settings import *
+except ImportError:
+    import sys, traceback
+    sys.stderr.write("Warning: Can't find the file 'local_settings.py' in the directory containing %r. It appears you've customized things.\nYou'll have to run django-admin.py, passing it your settings module.\n(If the file settings.py does indeed exist, it's causing an ImportError somehow.)\n" % __file__)
+    sys.stderr.write("\nFor debugging purposes, the exception was:\n\n")
+    traceback.print_exc()
+
+## Define our project global
+
+DISABLED_APPS += ('socialauth',)
+
+PRIVATEBETA_ENABLE_BETA = True
+REGISTRATION_INVITE_ONLY = True
+
+SENTRY_SITE = '<%= name %>'
+SENTRY_NAME = '<%= domain %>'
+
+
+## Remove disabled apps
+
+if 'DISABLED_APPS' in locals():
+    INSTALLED_APPS = [k for k in INSTALLED_APPS if k not in DISABLED_APPS]
+
+    MIDDLEWARE_CLASSES = list(MIDDLEWARE_CLASSES)
+    # DATABASE_ROUTERS = list(DATABASE_ROUTERS)
+    TEMPLATE_CONTEXT_PROCESSORS = list(TEMPLATE_CONTEXT_PROCESSORS)
+
+    for a in DISABLED_APPS:
+        for x, m in enumerate(MIDDLEWARE_CLASSES):
+            if m.startswith(a):
+                MIDDLEWARE_CLASSES.pop(x)
+
+        for x, m in enumerate(TEMPLATE_CONTEXT_PROCESSORS):
+            if m.startswith(a):
+                TEMPLATE_CONTEXT_PROCESSORS.pop(x)
+
+        # for x, m in enumerate(DATABASE_ROUTERS):
+        #     if m.startswith(a):
+        #         DATABASE_ROUTERS.pop(x)
+
+## Cache loader
+if not DEBUG:
+    TEMPLATE_LOADERS = (
+        ('django.template.loaders.cached.Loader', TEMPLATE_LOADERS),
+    )

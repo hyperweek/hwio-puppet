@@ -1,0 +1,18 @@
+# This is the Ubuntu way to run Solr as a daemon.
+# Copy to /etc/init/ to run as daemon
+# Run with : sudo initctl start solr
+
+start on runlevel [2345]
+stop on runlevel [06]
+stop on shutdown
+
+respawn
+script
+  cd /opt/solr/
+  exec sudo -u <%= user %> java\
+    -server \
+    -Dsolr.solr.home=/etc/solr \
+    -Djetty.logs=/var/log/solr \
+    -Dsolr.data.dir=/var/lib/solr \
+    -jar start.jar
+end script
