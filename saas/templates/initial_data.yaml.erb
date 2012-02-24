@@ -20,7 +20,19 @@
     username: <%= user['username'] %>
   model: auth.user
   pk: 1
-- fields: {author: 1, icon: '', is_public: true, name: Default theme, parent_theme: 1,
+- fields:
+    name: english
+  model: languages.language
+  pk: en
+- fields:
+    name: french
+  model: languages.language
+  pk: fr
+- fields:
+    name: german
+  model: languages.language
+  pk: de
+- fields: {author: 1, is_public: true, name: Default theme, parent_theme: 1,
     theme_code: ''}
   model: themes.theme
   pk: 1
@@ -62,26 +74,26 @@
   model: modules.module
   pk: 19
 
-- fields: {type: 1, icon: 'layouts/icon/layout-icon-1.jpg'}
-  model: !!python/unicode 'layouts.layout'
+- fields: {type: 1}
+  model: layouts.layout
   pk: 1
-- fields: {type: 2, icon: 'layouts/icon/layout-icon-2.jpg'}
-  model: !!python/unicode 'layouts.layout'
+- fields: {type: 2}
+  model: layouts.layout
   pk: 2
-- fields: {type: 3, icon: 'layouts/icon/layout-icon-3.jpg'}
-  model: !!python/unicode 'layouts.layout'
+- fields: {type: 3}
+  model: layouts.layout
   pk: 3
-- fields: {type: 4, icon: 'layouts/icon/layout-icon-4.jpg'}
-  model: !!python/unicode 'layouts.layout'
+- fields: {type: 4}
+  model: layouts.layout
   pk: 4
-- fields: {type: 5, icon: 'layouts/icon/layout-icon-5.jpg'}
-  model: !!python/unicode 'layouts.layout'
+- fields: {type: 5}
+  model: layouts.layout
   pk: 5
-- fields: {type: 6, icon: 'layouts/icon/layout-icon-6.jpg'}
-  model: !!python/unicode 'layouts.layout'
+- fields: {type: 6}
+  model: layouts.layout
   pk: 6
-- fields: {type: 7, icon: 'layouts/icon/layout-icon-7.jpg'}
-  model: !!python/unicode 'layouts.layout'
+- fields: {type: 7}
+  model: layouts.layout
   pk: 7
 - fields: {layout: 1, is_module_container: true, name: !!python/unicode 'box_layout1_1',
     order: 1, parent_box: null, position: 1, width: 2}
