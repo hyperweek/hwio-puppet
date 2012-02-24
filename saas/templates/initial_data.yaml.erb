@@ -11,132 +11,17 @@
   pk: 1
 - fields:
     email: <%= user['email'] %>
-    first_name: <%= user['firstname'] %>
+    first_name: <%= user['first_name'] %>
     is_active: true
     is_staff: true
     is_superuser: true
-    last_name: <%= user['lastname'] %>
+    last_name: <%= user['last_name'] %>
     password: <%= user['password'] %>
     username: <%= user['username'] %>
   model: auth.user
   pk: 1
 - fields: {author: 1, icon: '', is_public: true, name: Default theme, parent_theme: 1,
-    theme_code: '/* Basic customization *******************************************/
-
-      /* group page backgrounds */ .wrapper { background: white url(/media/images/container_background.png)
-      top left repeat-x; }
-
-      #container { background: none; color: #333333; }
-
-      /* links style */ a { color: #333333; text-decoration: underline; }
-
-      a:hover { color: #666666; text-decoration: none; }
-
-      /* default box style */ .box { /* here overwrite box style */ }
-
-      .box .header { /* here overwrite box header style */ }
-
-      .box .header h2 { /* here overwrite box title style */ }
-
-      .box .body { /* here overwrite box body style */ }
-
-      .box .footer { /* here overwrite box body style */ }
-
-      .legend, .item .legend { color: #666666; font-size: 11px; }
-
-      .author { /* here set author style */ }
-
-      .time { /* here set time style */ }
-
-      .action-link { border-top: 1px dotted #D9D9D9; margin-top: 2px; padding-top:
-      2px; }
-
-      .action-link a { font-weight: bold; }
-
-      .count { color: #999999; }
-
-      .view-all { color: #999999; float: right; font-size: 11px; }
-
-      .pagination { margin-bottom: 16px; }
-
-      /* user avatar & user menu */ .avatar { background: url(/media/images/avatar_backgrounds.gif)
-      top left no-repeat; cursor: pointer; float: left; height: 38px; margin-right:
-      4px; padding: 3px 9px 0 3px; position: relative; width: 26px; }
-
-      .avatar:hover, .avatar:active { background: url(/media/images/avatar_backgrounds.gif)
-      -38px 0 no-repeat; }
-
-      .avatar:active { margin-top: 1px; margin-bottom: -1px; }
-
-      .avatar-menu { margin-top: 36px; }
-
-      .avatar-menu li a { color: #333333; }
-
-      /* Modules customization *******************************************/
-
-      /* Group Info *******************************************/ .module-group-info
-      { background: #F6F6F6; border: 1px solid #E2E2E2; border-bottom: 1px solid #D9D9D9;
-      padding: 8px; }
-
-      .group-desc { border-bottom: 1px dotted #CCCCCC; margin-bottom: 4px; padding-bottom:
-      8px; }
-
-      .group-type { padding: 2px 0; }
-
-      .group-channel, .group-tags { color: #666666; font-weight: bold; padding: 2px
-      0; }
-
-      .group-tags a, .group-tags a:link { font-weight: normal; }
-
-      .group-views { border-top: 1px dotted #CCCCCC; font-size: 11px; margin-top:
-      4px; padding-top: 4px; }
-
-      .group-update { font-size: 11px; }
-
-      .group-widget { border-top: 1px dotted #CCCCCC; margin-top: 4px; }
-
-      /* Members *******************************************/ .module-members { /*
-      here overwrite members box style */ }
-
-      .member-card { margin-bottom: 4px; }
-
-      .member-card .legend { font-size: 11px; }
-
-      .member-avatar { /* applied when option "Display avatar only" is chosen */ float:
-      left; padding: 2px; }
-
-      /* Cover *******************************************/ .module-group-cover {
-      background: none; border: 0; padding: 0; }
-
-      .module-group-cover .group-cover { border: 3px solid #D9D9D9; margin-bottom:
-      2px; }
-
-      /* Posts & Subscriptions *******************************************/ .module-posts,
-      .module-subscriptions { /* here overwrite posts and subscriptions box style
-      */ }
-
-      .post h4 { /* here overwrite post title style */ }
-
-      .post .legend { /* here overwrite post legend style */ }
-
-      /* Photos *******************************************/ .module-photos { /* here
-      overwrite photos box style */ }
-
-      ul.photos li { float: left; padding: 0 4px 4px 0; }
-
-      img.photo { background: #F6F6F6; border: 1px solid #D9D9D9; }
-
-      a img.photo:hover { background: #FFCCFF; border-color: #E8B6E5; }
-
-      /* Discussions *******************************************/ .module-discussions
-      { /* here overwrite discussions box style */ }
-
-      .topic { margin-bottom: 8px; }
-
-      .topic h4 { /* here overwrite topic title style */ }
-
-      .topic .info .title-add { color: #999999; font-size: 12px; font-weight: normal;
-      letter-spacing: 0; padding-left: 8px; } '}
+    theme_code: ''}
   model: themes.theme
   pk: 1
 - fields: {content_type: 14, description: About this group, name: About, type: 1}

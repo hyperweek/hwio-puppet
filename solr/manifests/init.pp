@@ -6,7 +6,6 @@ class solr($user='solr', $group='solr') {
     ensure => installed,
   }
 
-  # TODO: create solr user
   group { $group:
     ensure => present,
   }
@@ -17,6 +16,7 @@ class solr($user='solr', $group='solr') {
     gid     => $group,
     home    => '/var/lib/solr',
     shell   => '/bin/false',
+    require => Group[$group],
   }
 
   # Grab source from the internet
