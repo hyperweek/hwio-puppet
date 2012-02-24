@@ -131,9 +131,9 @@ class solr($user='solr', $group='solr') {
     "/etc/solr/conf/stopwords_fr.txt":
       ensure  => present,
       source  => 'puppet:///modules/solr/stopwords_fr.txt',
-      # owner   => $user,
-      # group   => $group,
-      # mode    => '0644',
+      owner   => 'root',
+      group   => 'root',
+      mode    => '0644',
       require => [ File["/etc/solr"], Exec["install solr"], ];
   }
 
@@ -155,6 +155,9 @@ class solr($user='solr', $group='solr') {
     "/etc/logrotate.d/solr":
       ensure  => present,
       source  => "puppet:///modules/solr/solr.logrotate",
+      owner   => 'root',
+      group   => 'root',
+      mode    => '0644',
       require => File["/etc/init/solr.conf"];
   }
 
