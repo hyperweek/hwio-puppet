@@ -25,9 +25,11 @@ define saas::instance(
   # App settings
   file {
     "$src/bundle_config.py":
+      ensure  => present,
       source  => "puppet:///modules/saas/bundle_config.py";
 
     "$src/app.ini":
+      ensure  => present,
       content => template("saas/app.ini.erb");
 
     "${src}/${name}/local_settings.py":
