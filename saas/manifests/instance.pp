@@ -83,12 +83,6 @@ define saas::instance(
       notify  => Service["supervisor::${name}"];
   }
 
-  # Media with S3
-  s3fs::do_mount { $::s3_bucket:
-    root        => "/mnt",
-    default_acl => "public-read",
-  }
-
   # Create leaf in mountpoint
   file { "/mnt/$::s3_bucket/${name}":
     ensure  => directory,

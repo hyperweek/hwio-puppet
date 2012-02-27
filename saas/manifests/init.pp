@@ -1,11 +1,11 @@
 class saas(
   $ensure=present,
-  $user=undef,
-  $group=undef,
   $src_root="/srv/www",
   $venv_root="/usr/local/venv",
   $hw_root="/usr/local/src/hyperweek") {
 
+  $user=$::dploi_user
+  $group=$::dploi_group
   $venv = "${venv_root}/saas"
 
   include nginx
@@ -57,5 +57,10 @@ class saas(
     ensure        => $ensure,
     requirements  => "${hw_root}/requirements/production.txt",
     require       => Exec["git-clone-hyperweek"],
+  }
+
+  s3fs::do_mount { $::s3_bucket:
+    root        => "/mnt",
+    default_acl => "public-read",
   }
 }
