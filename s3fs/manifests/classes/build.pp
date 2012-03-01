@@ -89,4 +89,8 @@ class s3fs::build {
     require => Exec["install s3fs"],
   }
 
+  exec { "/sbin/modprobe fuse":
+    subscribe   => File["/etc/fuse.conf"],
+    refreshonly => true,
+  }
 }
