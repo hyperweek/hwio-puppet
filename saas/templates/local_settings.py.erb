@@ -37,8 +37,7 @@ SEARCH_QUEUE_NAME = 'haystack_search_queue:<%= name %>'
 
 QUEUE_REDIS_CONNECTION = '%s:%s' % (config['redis']['host'], config['redis']['port'])
 
-SENTRY_KEY = '586d50090a48226'
-SENTRY_SERVERS = ('http://valholl.hyperweek.com/sentry/api/store/',)
+SENTRY_DSN = 'http://b497015976ad412ca4a8704cf2ec41f4:94f56ab8ecd545b4940ffe4632ac984b@sentry.hyperweek.com/1'
 
 MEDIA_ROOT = '/mnt/%s/<%= name %>' % config['s3']['bucket']
 MEDIA_URL = 'http://%s.s3.amazonaws.com/<%= name %>/' % config['s3']['bucket']
