@@ -38,7 +38,10 @@ except ImportError:
 
 ## Define our project global
 
-DISABLED_APPS += ('socialauth',)
+DISABLED_APPS += (
+    'socialauth',
+    'hyperweek.social',
+)
 
 PRIVATEBETA_ENABLE_BETA = True
 REGISTRATION_INVITE_ONLY = True
