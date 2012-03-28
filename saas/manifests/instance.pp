@@ -17,6 +17,10 @@ define saas::instance(
   $socket = "${gunicorn::rundir}/${name}.sock"
   $cron_user = $saas::user
 
+  $db_name = slice($name, 0, 64)
+  $db_user = slice($name, 0, 16)
+  $db_password = $name
+
   # Source configuration
   saas::app { $name:
     domain => $domain,
@@ -48,9 +52,9 @@ define saas::instance(
   }
 
   # Database configuration
-  mysql::client::create_db { $name:
-    user      => $name,
-    password  => $name,
+  mysql::client::create_db { $db_name:
+    user      => $db_user,
+    password  => $db_password,
   }
 
   $db_synced = "/usr/bin/mysql -h ${::mysql_host} -P ${::mysql_port} -u${name} -p${name} ${name} -e \"SELECT 1 FROM django_session;\""
@@ -129,7 +133,7 @@ define saas::instance(
 
     Python::Venv::Isolate[$venv] ->
     Solr::Core[$name] ->
-    Mysql::Client::Create_db[$name] ->
+    Mysql::Client::Create_db[$db_name] ->
 
     Exec["db-sync-$name"] ->
     Exec["db-sync-all-$name"] ->
