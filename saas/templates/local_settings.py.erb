@@ -46,5 +46,16 @@ STATIC_URL = "http://<%= domain %>/static/"
 COMPRESS_URL = STATIC_URL
 ADMIN_MEDIA_PREFIX = STATIC_URL + 'grappelli/'
 
+VIDEO_BUCKET_NAME = 'assets.hw.io'
+VIDEO_MEDIA_URL = 'http://%s.s3.amazonaws.com/' % VIDEO_BUCKET_NAME
+
+HEYWATCH_API_KEY = '8fb00e4dcec7f571db8128dbb0cac4ee'
+HEYWATCH_USERNAME = 'raphaelbriner'
+HEYWATCH_PASSWORD = 'hyper$02'
+HEYWATCH_DIRECTIVE = 's3://%s:%s@%s/' % (config['s3']['aws_key'], config['s3']['aws_secret'], VIDEO_BUCKET_NAME)
+HEYWATCH_UPLOAD_TO_URL = 'http://heywatch.com/upload.xml'
+HEYWATCH_PING_URL_AFTER_ENCODE = 'http://<%= domain %>/video/encoding_completed/'
+HEYWATCH_PING_URL_AFTER_ERROR = 'http://<%= domain %>/video/encoding_error/'
+
 #GA_ID = 'UA-551841-8'
 
