@@ -68,7 +68,8 @@ class nginx(
 
     "/usr/share/nginx/www/index.html":
       ensure  => $ensure,
-      content => template("nginx/nginx_default_index.erb"),
+      # content => template("nginx/nginx_default_index.erb"),
+      source  => "puppet:///modules/nginx/index.html",
       require => File['/etc/nginx/sites-available/default'];
   }
 }
