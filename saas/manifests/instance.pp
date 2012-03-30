@@ -36,12 +36,12 @@ define saas::instance(
       ensure  => present,
       content => template("saas/app.ini.erb");
 
-    "${src}/${name}/local_settings.py":
+    "${src}/app/local_settings.py":
       ensure  => present,
       content => template("saas/local_settings.py.erb"),
       notify  => Service["supervisor::${name}"];
 
-    "${src}/${name}/fixtures/initial_data.yaml":
+    "${src}/app/fixtures/initial_data.yaml":
       ensure  => present,
       content => template("saas/initial_data.yaml.erb");
   }
@@ -64,7 +64,7 @@ define saas::instance(
     "$venv/bin/python manage.py migrate --fake",
     "/usr/bin/mysql -h ${::mysql_host} -P ${::mysql_port} -u${name} -p${name} ${name} < ${saas::hw_root}/hyperweek/articleposts/sql/articleposts_views.sql",
 #    "$venv/bin/python manage.py loaddata ${saas::hw_root}/hyperweek/fixtures/initial_data.yaml",
-    "$venv/bin/python manage.py loaddata ${name}/fixtures/initial_data.yaml",
+    "$venv/bin/python manage.py loaddata app/fixtures/initial_data.yaml",
     "$venv/bin/python manage.py rebuild_index --noinput",
   ]
 
@@ -109,7 +109,7 @@ define saas::instance(
     venv            => $venv,
     src             => $src,
     django          => true,
-    django_settings => "${src}/${name}/settings.py",
+    django_settings => "${src}/app/settings.py",
     workers         => $workers,
     timeout_seconds => $timeout_seconds,
   }
@@ -127,8 +127,8 @@ define saas::instance(
   Saas::App[$name] ->
 
     File["$src/bundle_config.py"] ->
-    File["${src}/${name}/local_settings.py"] ->
-    File["${src}/${name}/fixtures/initial_data.yaml"] ->
+    File["${src}/app/local_settings.py"] ->
+    File["${src}/app/fixtures/initial_data.yaml"] ->
     File["$src/app.ini"] ->
 
     Python::Venv::Isolate[$venv] ->

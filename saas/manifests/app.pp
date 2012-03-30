@@ -56,25 +56,26 @@ define saas::app($domain) {
       owner   => $nginx::owner,
       group   => $nginx::group;
 
-    "${site_dir}/${name}":
+    "${site_dir}/app":
       ensure  => directory;
 
-    "${site_dir}/${name}/__init__.py":
+    "${site_dir}/app/__init__.py":
       ensure  => present;
 
-    "${site_dir}/${name}/settings.py":
+    "${site_dir}/app/settings.py":
       ensure  => present,
       content => template("saas/settings.py.erb");
 
-    "${site_dir}/${name}/fixtures":
+    "${site_dir}/app/fixtures":
       ensure  => directory;
 
-    "${site_dir}/${name}/static":
+    "${site_dir}/app/static":
       ensure  => directory;
 
     "${site_dir}/manage.py":
       ensure  => present,
-      content => template("saas/manage.py.erb");
+      # content => template("saas/manage.py.erb");
+      source => "puppet:///modules/saas/manage.py";
 
     "${site_dir}/hyperweek":
       ensure  => link,
