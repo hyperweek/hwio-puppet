@@ -7,7 +7,7 @@ class gunicorn(
   $logdir = "/var/log/gunicorn"
   $confdir = "/etc/gunicorn"
 
-  package { "libevent-1.4-2":
+  package { "libevent-dev":
     ensure => $ensure;
   }
 
