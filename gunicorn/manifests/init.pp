@@ -7,6 +7,10 @@ class gunicorn(
   $logdir = "/var/log/gunicorn"
   $confdir = "/etc/gunicorn"
 
+  package { "libevent":
+    ensure => $ensure;
+  }
+
   if $ensure == "present" {
     file {
       [$rundir, $confdir]:

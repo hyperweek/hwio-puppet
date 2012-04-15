@@ -66,6 +66,25 @@ define gunicorn::instance(
         group   => $python::venv::group,
         require => Python::Venv::Isolate[$venv],
         before  => File[$conffile];
+
+      "greenlet in $venv":
+        package => "greenlet",
+        ensure  => $ensure,
+        venv    => $venv,
+        owner   => $python::venv::owner,
+        group   => $python::venv::group,
+        require => Python::Venv::Isolate[$venv],
+        before  => File[$conffile];
+
+      "gevent in $venv":
+        package => "gevent",
+        ensure  => $ensure,
+        venv    => $venv,
+        owner   => $python::venv::owner,
+        group   => $python::venv::group,
+        require => Python::Venv::Isolate[$venv],
+        before  => File[$conffile];
+
     }
   }
 
