@@ -35,7 +35,16 @@ NEW_USER_NOTIFICATION_EMAILS = ('<%= user['email'] %>',)
 HAYSTACK_SOLR_URL = config['solr']['path']
 SEARCH_QUEUE_NAME = 'haystack_search_queue:<%= name %>'
 
+BROKER_URL = "redis://%s:%s" % (config['redis']['host'], config['redis']['port'])
 QUEUE_REDIS_CONNECTION = '%s:%s' % (config['redis']['host'], config['redis']['port'])
+
+CELERY_QUEUES = {
+    '<%= name %>': {
+        'exchange': 'direct',
+        'binding_key': '<%= name %>',
+    }
+}
+CELERY_DEFAULT_QUEUE = '<%= name %>'
 
 SENTRY_DSN = 'http://b497015976ad412ca4a8704cf2ec41f4:94f56ab8ecd545b4940ffe4632ac984b@sentry.hyperweek.com/1'
 
