@@ -99,7 +99,7 @@ define gunicorn::instance(
     content => template("gunicorn/logrotate.erb"),
   }
 
-  supervisor::service { $name:
+  supervisor::service { "${name}-app":
     ensure          => $ensure,
     command         => inline_template("<%= venv %>/bin/gunicorn<% if django %>_django<% end %> -c <%= conffile %> <%= django ? django_settings : wsgi_module %> --log-file=<%= logfile %>"),
     directory       => $src,

@@ -123,6 +123,13 @@ define saas::instance(
     mode    => '0644';
   }
 
+  # Celery worker
+  supervisor::service { "${name}-worker":
+    ensure          => $ensure,
+    command         => inline_template("<%= venv %>/bin/python manage.py celeryd --queues=<%= name %>"),
+    directory       => $src,
+  }
+
   # Dependency graph
   Saas::App[$name] ->
 
@@ -145,5 +152,6 @@ define saas::instance(
     Gunicorn::Instance[$name] ->
     Nginx::Site[$name] ->
 
-    File["/etc/cron.d/${name}-app"]
+    File["/etc/cron.d/${name}-app"] ->
+    Supervisor::Service["${name}-worker"]
 }
