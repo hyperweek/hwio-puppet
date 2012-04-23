@@ -74,8 +74,11 @@ define saas::app($domain) {
 
     "${site_dir}/manage.py":
       ensure  => present,
-      # content => template("saas/manage.py.erb");
       source => "puppet:///modules/saas/manage.py";
+
+    "${site_dir}/wsgi.py":
+      ensure  => present,
+      source => "puppet:///modules/saas/wsgi.py";
 
     "${site_dir}/hyperweek":
       ensure  => link,
