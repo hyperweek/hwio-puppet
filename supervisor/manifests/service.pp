@@ -12,12 +12,12 @@ define supervisor::service(
   $is_present = $ensure == "present"
 
   file {
-    "${supervisor::params::conf_dir}/${name}.conf":
+    "${supervisor::params::confdir}/${name}.conf":
       ensure  => $ensure,
       owner   => 'root',
       group   => 'root',
       content => template("supervisor/service.erb"),
-      require => File[$supervisor::params::conf_dir],
+      require => File[$supervisor::params::confdir],
       notify  => Exec['supervisor::update'];
   }
 
@@ -34,7 +34,7 @@ define supervisor::service(
       require  => [
         Package[$supervisor::params::package],
         Service[$supervisor::params::system_service],
-        File["${supervisor::params::conf_dir}/${name}.conf"],
+        File["${supervisor::params::confdir}/${name}.conf"],
       ];
   }
 }

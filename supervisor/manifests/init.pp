@@ -11,7 +11,7 @@ class supervisor($ensure=present) {
 
   if $ensure == "present" {
     file {
-      $supervisor::params::conf_dir:
+      $supervisor::params::confdir:
         ensure  => directory,
         owner   => 'root',
         group   => 'root',
@@ -31,7 +31,7 @@ class supervisor($ensure=present) {
 
   } elsif $ensure == 'absent' {
     file {
-      $supervisor::params::conf_dir:
+      $supervisor::params::confdir:
         ensure  => $ensure;
       "/var/run/supervisor":
         ensure  => $ensure;
