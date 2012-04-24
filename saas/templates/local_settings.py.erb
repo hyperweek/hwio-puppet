@@ -68,3 +68,8 @@ HEYWATCH_PING_URL_AFTER_ERROR = 'http://<%= domain %>/video/encoding_error/'
 
 #GA_ID = 'UA-551841-8'
 
+# Debug
+STATIC_URL = "http://<%= domain %>:8080/static/"
+COMPRESS_URL = STATIC_URL
+ADMIN_MEDIA_PREFIX = STATIC_URL + 'grappelli/'
+# --//--

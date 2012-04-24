@@ -16,17 +16,12 @@ class saas(
   include python::dev
   include solr
   include s3fs
+  include uwsgi
 
   class { "python::venv":
     ensure  => $ensure,
     owner   => $user,
     group   => $user,
-  }
-
-  class { "gunicorn":
-    ensure  => $ensure,
-    owner   => "www-data",
-    group   => "www-data",
   }
 
   file {

@@ -1,0 +1,16 @@
+[uwsgi]
+venv=<%= venv %>
+chdir=<%= directory %>
+module=wsgi:application
+master=true
+pidfile=<%= pidfile %>
+socket=<%= socket %>
+logto=<%= logfile %>
+workers=<%= workers %>
+threads=<%= threads %>
+uid=<%= owner %>
+gid=<%= group %>
+harakiri=20
+idle=3600
+max-requests=5000
+vacuum=true

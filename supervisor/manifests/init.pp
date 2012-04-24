@@ -9,21 +9,29 @@ class supervisor($ensure=present) {
     }
   }
 
-  if $ensure == "present" {
+  file {
+    '/etc/supervisor/supervisord.conf':
+      ensure  => $ensure,
+      source  => 'puppet:///modules/supervisor/supervisord.conf',
+      owner   => 'root',
+      group   => 'root';
+  }
+
+  if $ensure == 'present' {
     file {
       $supervisor::params::confdir:
         ensure  => directory,
         owner   => 'root',
         group   => 'root',
         require => Package[$supervisor::params::package];
-      ["/var/log/supervisor", "/var/run/supervisor"]:
+      '/var/log/supervisor':
         ensure  => directory,
         owner   => 'root',
         group   => 'root',
         backup  => false,
         require => Package[$supervisor::params::package];
-      "/etc/logrotate.d/supervisor":
-        source  => "puppet:///modules/supervisor/logrotate",
+      '/etc/logrotate.d/supervisor':
+        source  => 'puppet:///modules/supervisor/logrotate',
         owner   => 'root',
         group   => 'root',
         require => Package[$supervisor::params::package];
@@ -32,8 +40,6 @@ class supervisor($ensure=present) {
   } elsif $ensure == 'absent' {
     file {
       $supervisor::params::confdir:
-        ensure  => $ensure;
-      "/var/run/supervisor":
         ensure  => $ensure;
     }
   }

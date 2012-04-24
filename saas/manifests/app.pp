@@ -24,25 +24,25 @@ define saas::app($domain) {
 
     "${site_dir}/public/favicon.ico":
       ensure  => present,
-      source  => "puppet:///modules/saas/favicon.ico",
+      source  => 'puppet:///modules/saas/favicon.ico',
       owner   => $nginx::owner,
       group   => $nginx::group;
 
     "${site_dir}/public/favicon.png":
       ensure  => present,
-      source  => "puppet:///modules/saas/favicon.png",
+      source  => 'puppet:///modules/saas/favicon.png',
       owner   => $nginx::owner,
       group   => $nginx::group;
 
     "${site_dir}/public/crossdomain.xml":
       ensure  => present,
-      source  => "puppet:///modules/saas/crossdomain.xml",
+      source  => 'puppet:///modules/saas/crossdomain.xml',
       owner   => $nginx::owner,
       group   => $nginx::group;
 
     "${site_dir}/public/robots.txt":
       ensure  => present,
-      source  => "puppet:///modules/saas/robots.txt",
+      source  => 'puppet:///modules/saas/robots.txt',
       owner   => $nginx::owner,
       group   => $nginx::group;
 
@@ -64,7 +64,7 @@ define saas::app($domain) {
 
     "${site_dir}/app/settings.py":
       ensure  => present,
-      content => template("saas/settings.py.erb");
+      content => template('saas/settings.py.erb');
 
     "${site_dir}/app/fixtures":
       ensure  => directory;
@@ -74,11 +74,11 @@ define saas::app($domain) {
 
     "${site_dir}/manage.py":
       ensure  => present,
-      source => "puppet:///modules/saas/manage.py";
+      source => 'puppet:///modules/saas/manage.py';
 
     "${site_dir}/wsgi.py":
       ensure  => present,
-      source => "puppet:///modules/saas/wsgi.py";
+      source => 'puppet:///modules/saas/wsgi.py';
 
     "${site_dir}/hyperweek":
       ensure  => link,

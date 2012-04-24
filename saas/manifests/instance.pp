@@ -6,6 +6,8 @@ define saas::instance(
   $workers=1,
   $timeout_seconds=30) {
 
+  include uwsgi::params
+
   File {
     owner => $saas::user,
     group => $saas::group,
@@ -14,7 +16,7 @@ define saas::instance(
 
   $venv = $saas::venv
   $src = "${saas::src_root}/$domain"
-  $socket = "${gunicorn::rundir}/${name}.sock"
+  $socket = "${uwsgi::params::rundir}/${name}.sock"
   $cron_user = $saas::user
 
   $db_name = slice($name, 0, 64)
@@ -83,8 +85,7 @@ define saas::instance(
       command => "$venv/bin/python manage.py collectstatic --noinput -i \"*.less\"",
       cwd     => $src,
       user    => "www-data",
-      group   => "www-data",
-      notify  => Service["supervisor::${name}"];
+      group   => "www-data";
   }
 
   # Create leaf in mountpoint
@@ -96,7 +97,7 @@ define saas::instance(
   }
 
   # Service configuration
-  nginx::site { $name:
+  nginx::app { $name:
     ensure    => $ensure,
     domain    => $domain,
     aliases   => $aliases,
@@ -104,14 +105,10 @@ define saas::instance(
     upstreams => ["unix:${socket}"],
   }
 
-  gunicorn::instance { $name:
-    ensure          => $ensure,
-    venv            => $venv,
-    src             => $src,
-    django          => true,
-    django_settings => "${src}/app/settings.py",
-    workers         => $workers,
-    timeout_seconds => $timeout_seconds,
+  uwsgi::app { $name:
+    ensure    => $ensure,
+    venv      => $venv,
+    directory => $src,
   }
 
   # Cron configuration
@@ -142,8 +139,8 @@ define saas::instance(
     S3fs::Do_mount[$::s3_bucket] ->
     File["/mnt/$::s3_bucket/${name}"] ->
 
-    Gunicorn::Instance[$name] ->
-    Nginx::Site[$name] ->
+    Uwsgi::App[$name] ->
+    Nginx::App[$name] ->
 
     File["/etc/cron.d/${name}-app"]
 }
