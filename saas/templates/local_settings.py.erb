@@ -46,9 +46,11 @@ CELERY_QUEUES = {
 }
 CELERY_DEFAULT_QUEUE = '<%= name %>'
 
-SENTRY_DSN = 'http://b497015976ad412ca4a8704cf2ec41f4:94f56ab8ecd545b4940ffe4632ac984b@sentry.hyperweek.com/1'
+DEFAULT_FILE_STORAGE = 'hyperweek.core.files.storage.S3FSStorage'
+S3FS_STORAGE_CACHE = 'hyperweek.core.files.storage.CacheFileSystemStorage'
 
 MEDIA_ROOT = '/mnt/%s/<%= name %>' % config['s3']['bucket']
+MEDIA_CACHE_ROOT = '/mnt/.cache/%s/<%= name %>' % config['s3']['bucket']
 MEDIA_URL = 'http://%s.s3.amazonaws.com/<%= name %>/' % config['s3']['bucket']
 
 STATIC_URL = "http://<%= domain %>/static/"
@@ -67,3 +69,5 @@ HEYWATCH_PING_URL_AFTER_ENCODE = 'http://<%= domain %>/video/encoding_completed/
 HEYWATCH_PING_URL_AFTER_ERROR = 'http://<%= domain %>/video/encoding_error/'
 
 #GA_ID = 'UA-551841-8'
+
+SENTRY_DSN = 'http://b497015976ad412ca4a8704cf2ec41f4:94f56ab8ecd545b4940ffe4632ac984b@sentry.hyperweek.com/1'
