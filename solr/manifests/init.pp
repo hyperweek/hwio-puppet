@@ -1,5 +1,5 @@
 class solr($user='solr', $group='solr') {
-  $version = '3.5.0'
+  $version = '3.6.0'
 
   $prereqs = ["openjdk-6-jre-headless", "curl"]
   package { $prereqs:
