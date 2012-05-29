@@ -39,8 +39,7 @@ define saas::project($domain, $branch, $repository) {
       command => "/usr/bin/git clone -b ${branch} ${repository} ${site_dir}",
       creates => "${site_dir}/.git",
       user    => $saas::user,
-      group   => $saas::group,
-      refreshonly => true;
+      group   => $saas::group;
   }
 
   File["${site_dir}"] ->
