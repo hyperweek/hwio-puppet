@@ -1,17 +1,12 @@
 define saas::project($domain, $branch, $repository) {
-  File {
-    owner => $saas::user,
-    group => $saas::group,
-    mode  => '0644',
-  }
-
   $site_dir = "${saas::src_root}/${domain}"
-
   $venv = $saas::venv
 
   file {
     "${site_dir}":
-      ensure  => directory;
+      ensure  => directory,
+      owner   => $saas::user,
+      group   => $saas::group;
 
     "${site_dir}/public":
       ensure  => directory,
@@ -30,6 +25,8 @@ define saas::project($domain, $branch, $repository) {
 
     "${site_dir}/log":
       ensure  => directory,
+      owner   => $saas::user,
+      group   => $saas::group;
   }
 
   exec {
