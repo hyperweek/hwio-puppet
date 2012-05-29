@@ -6,27 +6,32 @@ define saas::project($domain, $branch, $repository) {
     "${site_dir}":
       ensure  => directory,
       owner   => $saas::user,
-      group   => $saas::group;
+      group   => $saas::group,
+      mode    => '0755';
 
     "${site_dir}/public":
       ensure  => directory,
       owner   => $nginx::owner,
-      group   => $nginx::group;
+      group   => $nginx::group,
+      mode    => '0755';
 
     "${site_dir}/public/static":
       ensure  => directory,
       owner   => $nginx::owner,
-      group   => $nginx::group;
+      group   => $nginx::group,
+      mode    => '0755';
 
     "${site_dir}/public/media":
       ensure  => directory,
       owner   => $nginx::owner,
-      group   => $nginx::group;
+      group   => $nginx::group,
+      mode    => '0755';
 
     "${site_dir}/log":
       ensure  => directory,
       owner   => $saas::user,
-      group   => $saas::group;
+      group   => $saas::group,
+      mode    => '0755';
   }
 
   exec {
@@ -34,7 +39,8 @@ define saas::project($domain, $branch, $repository) {
       command => "/usr/bin/git clone -b ${branch} ${repository} ${site_dir}",
       creates => "${site_dir}/.git",
       user    => $saas::user,
-      group   => $saas::group;
+      group   => $saas::group,
+      refreshonly => true;
   }
 
   File["${site_dir}"] ->
