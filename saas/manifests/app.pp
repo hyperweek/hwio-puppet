@@ -8,7 +8,6 @@ define saas::app($domain) {
   $site_dir = "${saas::src_root}/${domain}"
 
   $venv = $saas::venv
-  $hw_root = $saas::hw_root
 
   # TODO
   $secret_key = "123456789"
@@ -79,10 +78,6 @@ define saas::app($domain) {
     "${site_dir}/wsgi.py":
       ensure  => present,
       source => 'puppet:///modules/saas/wsgi.py';
-
-    "${site_dir}/hyperweek":
-      ensure  => link,
-      target  => "${hw_root}/hyperweek";
 
     "${site_dir}/log":
       ensure  => directory,

@@ -6,7 +6,8 @@ class saas(
 
   $user=$::dploi_user
   $group=$::dploi_group
-  $venv = "${venv_root}/saas"
+  $venv_name = 'saas'
+  $venv = "${venv_root}/${venv_name}"
 
   include nginx
   include redis

@@ -1,6 +1,6 @@
 from bundle_config import config
 
-MANAGERS = ('<%= user['email'] %>',)
+<% if user %>MANAGERS = ('<%= user['email'] %>',)<% end %>
 
 DATABASES = {
     'default': {
@@ -30,7 +30,7 @@ CACHES = {
     }
 }
 
-NEW_USER_NOTIFICATION_EMAILS = ('<%= user['email'] %>',)
+<% if user %>NEW_USER_NOTIFICATION_EMAILS = ('<%= user['email'] %>',)<% end %>
 
 HAYSTACK_SOLR_URL = config['solr']['path']
 SEARCH_QUEUE_NAME = 'haystack_search_queue:<%= name %>'

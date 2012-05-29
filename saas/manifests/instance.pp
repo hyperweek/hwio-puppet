@@ -30,11 +30,15 @@ define saas::instance(
 
   # App settings
   file {
-    "$src/bundle_config.py":
+    "${src}/hyperweek":
+      ensure  => link,
+      target  => "${saas::hw_root}/hyperweek";
+
+    "${src}/bundle_config.py":
       ensure  => present,
       source  => "puppet:///modules/saas/bundle_config.py";
 
-    "$src/app.ini":
+    "${src}/app.ini":
       ensure  => present,
       content => template("saas/app.ini.erb");
 
@@ -62,27 +66,27 @@ define saas::instance(
   $db_synced = "/usr/bin/mysql -h ${::mysql_host} -P ${::mysql_port} -u${name} -p${name} ${name} -e \"SELECT 1 FROM django_session;\""
 
   $sync_commands = [
-    "$venv/bin/python manage.py syncdb --noinput --all",
-    "$venv/bin/python manage.py migrate --fake",
+    "${venv}/bin/python manage.py syncdb --noinput --all",
+    "${venv}/bin/python manage.py migrate --fake",
     "/usr/bin/mysql -h ${::mysql_host} -P ${::mysql_port} -u${name} -p${name} ${name} < ${saas::hw_root}/hyperweek/articleposts/sql/articleposts_views.sql",
 #    "$venv/bin/python manage.py loaddata ${saas::hw_root}/hyperweek/fixtures/initial_data.yaml",
-    "$venv/bin/python manage.py loaddata app/fixtures/initial_data.yaml",
-    "$venv/bin/python manage.py rebuild_index --noinput",
+    "${venv}/bin/python manage.py loaddata app/fixtures/initial_data.yaml",
+    "${venv}/bin/python manage.py rebuild_index --noinput",
   ]
 
   exec {
-    "db-sync-$name":
-      command => "$venv/bin/python manage.py syncdb --noinput --migrate",
+    "db-sync-${name}":
+      command => "${venv}/bin/python manage.py syncdb --noinput --migrate",
       onlyif  => $db_synced,
       cwd     => $src;
 
-    "db-sync-all-$name":
+    "db-sync-all-${name}":
       command => inline_template("<%= sync_commands.join(';') %>"),
       unless  => $db_synced,
       cwd     => $src;
 
-    "collectstatic-$name":
-      command => "$venv/bin/python manage.py collectstatic --noinput -i \"*.less\"",
+    "collectstatic-${name}":
+      command => "${venv}/bin/python manage.py collectstatic --noinput -i \"*.less\"",
       cwd     => $src,
       user    => "www-data",
       group   => "www-data";
@@ -123,18 +127,19 @@ define saas::instance(
   # Dependency graph
   Saas::App[$name] ->
 
-    File["$src/bundle_config.py"] ->
+    File["${src}/hyperweek"] ->
+    File["${src}/bundle_config.py"] ->
     File["${src}/app/local_settings.py"] ->
     File["${src}/app/fixtures/initial_data.yaml"] ->
-    File["$src/app.ini"] ->
+    File["${src}/app.ini"] ->
 
     Python::Venv::Isolate[$venv] ->
     Solr::Core[$name] ->
     Mysql::Client::Create_db[$db_name] ->
 
-    Exec["db-sync-$name"] ->
-    Exec["db-sync-all-$name"] ->
-    Exec["collectstatic-$name"] ->
+    Exec["db-sync-${name}"] ->
+    Exec["db-sync-all-${name}"] ->
+    Exec["collectstatic-${name}"] ->
 
     S3fs::Do_mount[$::s3_bucket] ->
     File["/mnt/$::s3_bucket/${name}"] ->
