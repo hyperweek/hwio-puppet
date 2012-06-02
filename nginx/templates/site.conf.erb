@@ -43,8 +43,6 @@ server {
 
   keepalive_timeout 5;
 
-  error_page  500 502 503 504 /index.html;
-
   location / {
 
     <% unless upstreams.empty? %>
