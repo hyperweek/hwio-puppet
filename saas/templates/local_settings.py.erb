@@ -33,7 +33,7 @@ CACHES = {
 
 SESSION_ENGINE = 'hyperweek.core.sessions.redis_backend'
 SESSION_REDIS_HOST = config['redis']['host']
-SESSION_REDIS_PORT = config['redis']['port']
+SESSION_REDIS_PORT = int(config['redis']['port'])
 SESSION_KEY_PREFIX = 'sessionstore:<%= name %>'
 
 <% if user %>NEW_USER_NOTIFICATION_EMAILS = ('<%= user['email'] %>',)<% end %>
