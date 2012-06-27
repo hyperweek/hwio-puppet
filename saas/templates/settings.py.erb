@@ -1,7 +1,6 @@
 # -*- coding: utf-8 -*-
 import os
 
-# os.environ['DJANGO_PROJECT'] = os.path.basename(os.path.dirname(__file__))
 os.environ['DJANGO_PROJECT'] = '<%= name %>'
 os.environ['PROJECT_ROOT'] = os.path.abspath(os.path.dirname(__file__))
 
@@ -76,5 +75,5 @@ if 'DISABLED_APPS' in locals():
 ## Cache loader
 if not DEBUG:
     TEMPLATE_LOADERS = (
-        ('django.template.loaders.cached.Loader', TEMPLATE_LOADERS),
+        ('mobileme.loaders.cached.Loader', TEMPLATE_LOADERS),
     )
