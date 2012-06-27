@@ -86,7 +86,7 @@ define saas::instance(
       cwd     => $src;
 
     "collectstatic-${name}":
-      command => "${venv}/bin/python manage.py collectstatic --noinput -i \"*.less\" --ignore-errors",
+      command => "${venv}/bin/python manage.py collectstatic --noinput -i \"*.less\" --ignore-errors --clear",
       cwd     => $src,
       user    => "www-data",
       group   => "www-data";
