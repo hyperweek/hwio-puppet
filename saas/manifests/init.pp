@@ -51,7 +51,7 @@ class saas(
 
   python::venv::isolate { $venv:
     ensure        => $ensure,
-    requirements  => "${hw_root}/requirements/production.txt",
+    requirements  => "${hw_root}/requirements.txt",
     require       => Exec["git-clone-hyperweek"],
   }
 
