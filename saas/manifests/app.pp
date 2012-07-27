@@ -1,4 +1,4 @@
-define saas::app($domain) {
+define saas::app($domain, $ensure=present) {
   File {
     owner => $saas::user,
     group => $saas::group,
@@ -46,7 +46,12 @@ define saas::app($domain) {
       group   => $nginx::group;
 
     "${site_dir}/public/static":
-      ensure  => directory,
+      ensure  => $ensure ? {
+        present => directory,
+        default => $ensure,
+      },
+      recurse => true,
+      force   => true,
       owner   => $nginx::owner,
       group   => $nginx::group;
 

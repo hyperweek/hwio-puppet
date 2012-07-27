@@ -26,6 +26,7 @@ define saas::instance(
   # Source configuration
   saas::app { $name:
     domain => $domain,
+    ensure => $ensure,
   }
 
   # App settings
@@ -88,8 +89,10 @@ define saas::instance(
     "collectstatic-${name}":
       command => "${venv}/bin/python manage.py collectstatic --noinput -i \"*.less\" --ignore-errors --clear",
       cwd     => $src,
-      user    => "www-data",
-      group   => "www-data",
+      path    => '/usr/bin:/usr/sbin:/bin',
+      onlyif  => "test -d ${src}/public/static",
+      user    => 'www-data',
+      group   => 'www-data',
       notify  => Service["supervisor::${name}"];
   }
 
