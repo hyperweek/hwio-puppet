@@ -98,7 +98,7 @@ define saas::custom(
       cwd     => $src;
 
     "collectstatic-${name}":
-      command => "${venv}/bin/python manage.py collectstatic --noinput -i \"*.less\" --ignore-errors --clear",
+      command => "${venv}/bin/python manage.py collectstatic --noinput -i \"*.less\" --ignore-errors",
       cwd     => $src,
       user    => "www-data",
       group   => "www-data",
