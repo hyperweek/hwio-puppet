@@ -17,6 +17,7 @@ LOG_PATH=<%= src %>/log
 0 6 * * * <%= cron_user %> cd $PROJECT_PATH && $VENV_PATH/bin/python manage.py send_mail_digest --frequency=2 >> $LOG_PATH/send_mail_digest.log 2>&1
 
 # weekly
+@weekly <%= cron_user %> cd $PROJECT_PATH && $VENV_PATH/bin/python manage.py cleanup_mailer >> $LOG_PATH/cleanup_mailer.log 2>&1
 10 6 * * 1 <%= cron_user %> cd $PROJECT_PATH && $VENV_PATH/bin/python manage.py send_mail_digest --frequency=3 >> $LOG_PATH/send_mail_digest.log 2>&1
 20 6 1,15 * * <%= cron_user %> cd $PROJECT_PATH && $VENV_PATH/bin/python manage.py send_mail_digest --frequency=4 >> $LOG_PATH/send_mail_digest.log 2>&1
 
