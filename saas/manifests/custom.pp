@@ -82,6 +82,7 @@ define saas::custom(
     "${venv}/bin/python manage.py syncdb --noinput --all",
     "${venv}/bin/python manage.py migrate --fake",
     "/usr/bin/mysql -h ${::mysql_host} -P ${::mysql_port} -u${name} -p${name} ${name} < ${saas::hw_root}/hyperweek/articleposts/sql/articleposts_views.sql",
+    "${venv}/bin/python manage.py loaddata ${saas::hw_root}/hyperweek/fixtures/initial_data.yaml",
     "${venv}/bin/python manage.py loaddata ${name}/fixtures/initial_data.yaml",
     "${venv}/bin/python manage.py rebuild_index --noinput",
   ]
