@@ -44,8 +44,15 @@ server {
   keepalive_timeout 5;
 
   error_page  502 503 504 /index.html;
+  location = /index.html {
+    # Allow requests
+  }
 
   location / {
+    # Maintenance mode@
+    if (-f $document_root/.maintenance) {
+      return 503;
+    }
 
     <% unless upstreams.empty? %>
     try_files $uri @<%= name %>;

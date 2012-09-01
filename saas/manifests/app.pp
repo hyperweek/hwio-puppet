@@ -21,6 +21,12 @@ define saas::app($domain, $ensure=present) {
       owner   => $nginx::owner,
       group   => $nginx::group;
 
+    "${site_dir}/public/index.html":
+      ensure  => present,
+      source  => 'puppet:///modules/saas/index.html',
+      owner   => $nginx::owner,
+      group   => $nginx::group;
+
     "${site_dir}/public/favicon.ico":
       ensure  => present,
       source  => 'puppet:///modules/saas/favicon.ico',
