@@ -49,7 +49,7 @@ server {
   }
 
   location / {
-    # Maintenance mode@
+    # Maintenance mode
     if (-f $document_root/.maintenance) {
       return 503;
     }
