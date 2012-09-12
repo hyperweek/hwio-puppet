@@ -90,7 +90,7 @@ define saas::app($domain, $ensure=present) {
       source => 'puppet:///modules/saas/wsgi.py';
 
     "/var/log/${name}":
-      ensure  => directory,
+      ensure  => directory;
 
     "/mnt/static.hw.io":
       ensure  => directory,
