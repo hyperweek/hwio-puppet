@@ -46,6 +46,8 @@ ROOT_URLCONF = 'hyperweek.urls'
 PRIVATEBETA_ENABLE_BETA = True
 REGISTRATION_INVITE_ONLY = True
 
+STATSD_PREFIX = '<%= name %>'
+
 SENTRY_SITE = '<%= name %>'
 SENTRY_NAME = '<%= domain %>'
 
@@ -77,3 +79,7 @@ if not DEBUG:
     TEMPLATE_LOADERS = (
         ('mobileme.loaders.cached.Loader', TEMPLATE_LOADERS),
     )
+
+## Celery
+import djcelery
+djcelery.setup_loader()
