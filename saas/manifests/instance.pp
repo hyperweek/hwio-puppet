@@ -142,6 +142,9 @@ define saas::instance(
   }
 
   # Dependency graph
+  S3fs::Do_mount[$::s3_bucket] ->
+  File["/mnt/$::s3_bucket/${name}"] ->
+
   Saas::App[$name] ->
 
     File["${src}/hyperweek"] ->
@@ -157,9 +160,6 @@ define saas::instance(
     Exec["db-sync-${name}"] ->
     Exec["db-sync-all-${name}"] ->
     Exec["collectstatic-${name}"] ->
-
-    S3fs::Do_mount[$::s3_bucket] ->
-    File["/mnt/$::s3_bucket/${name}"] ->
 
     Uwsgi::App[$name] ->
     Nginx::App[$name] ->
