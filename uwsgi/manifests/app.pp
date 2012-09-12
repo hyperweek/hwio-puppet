@@ -36,7 +36,7 @@ define uwsgi::app(
     }
   }
 
-  file { "$conffile":
+  file { "${conffile}":
     ensure  => $ensure,
     content => template("uwsgi/app.ini.erb");
   }
@@ -46,7 +46,7 @@ define uwsgi::app(
     content => template("uwsgi/logrotate.erb"),
   }
 
-  supervisor::service { "${name}":
+  supervisor::service { "${name}-web":
     ensure          => $ensure,
     command         => inline_template("<%= venv %>/bin/uwsgi --ini <%= conffile %>"),
     directory       => $directory,
