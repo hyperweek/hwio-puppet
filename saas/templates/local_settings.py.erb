@@ -50,6 +50,9 @@ HAYSTACK_CONNECTIONS = {
 
 BROKER_URL = "redis://%s:%s/0" % (config['redis']['host'], config['redis']['port'])
 CELERY_DEFAULT_QUEUE = '<%= name %>:default'
+CELERY_DEFAULT_EXCHANGE = '<%= name %>:default'
+CELERY_DEFAULT_EXCHANGE_TYPE = 'direct'
+CELERY_DEFAULT_ROUTING_KEY = '<%= name %>:default'
 
 DEFAULT_FILE_STORAGE = 'hyperweek.core.files.storage.S3FSStorage'
 S3FS_STORAGE_CACHE = 'hyperweek.core.files.storage.CacheFileSystemStorage'
@@ -60,7 +63,7 @@ MEDIA_URL = 'http://%s.s3.amazonaws.com/<%= name %>/' % config['s3']['bucket']
 
 STATIC_URL = "http://<%= domain %>/static/"
 COMPRESS_URL = STATIC_URL
-ADMIN_MEDIA_PREFIX = STATIC_URL + 'grappelli/'
+ADMIN_MEDIA_PREFIX =  '%sgrappelli/' % STATIC_URL
 
 VIDEO_BUCKET_NAME = 'assets.hw.io'
 VIDEO_MEDIA_URL = 'http://%s.s3.amazonaws.com/' % VIDEO_BUCKET_NAME
