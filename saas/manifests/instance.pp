@@ -93,7 +93,7 @@ define saas::instance(
       onlyif  => "test -d ${src}/public/static",
       user    => 'www-data',
       group   => 'www-data',
-      notify  => Service["supervisor::${name}"];
+      notify  => Service["supervisor::${name}-web"];
   }
 
   # Create leaf in mountpoint
