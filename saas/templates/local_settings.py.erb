@@ -39,10 +39,9 @@ SESSION_KEY_PREFIX = 'sessionstore:<%= name %>'
 <% if user %>NEW_USER_NOTIFICATION_EMAILS = ('<%= user['email'] %>',)<% end %>
 
 HAYSTACK_SOLR_URL = config['solr']['path']
-SEARCH_QUEUE_NAME = 'haystack_search_queue:<%= name %>'
 
-BROKER_URL = "redis://%s:%s" % (config['redis']['host'], config['redis']['port'])
-QUEUE_REDIS_CONNECTION = '%s:%s' % (config['redis']['host'], config['redis']['port'])
+BROKER_URL = "redis://%s:%s/0" % (config['redis']['host'], config['redis']['port'])
+CELERY_DEFAULT_QUEUE = '<%= name %>:default'
 
 DEFAULT_FILE_STORAGE = 'hyperweek.core.files.storage.S3FSStorage'
 S3FS_STORAGE_CACHE = 'hyperweek.core.files.storage.CacheFileSystemStorage'
@@ -67,5 +66,10 @@ HEYWATCH_PING_URL_AFTER_ENCODE = 'http://<%= domain %>/video/encoding_completed/
 HEYWATCH_PING_URL_AFTER_ERROR = 'http://<%= domain %>/video/encoding_error/'
 
 GA_ID = 'UA-551841-8'
+
+STATSD_HOST = '5.9.8.196'
+STATSD_PORT = 8125
+STATSD_PREFIX = 'demo.hyperweek.com'
+STATSD_CLIENT = 'django_statsd.clients.normal'
 
 SENTRY_DSN = 'http://b497015976ad412ca4a8704cf2ec41f4:94f56ab8ecd545b4940ffe4632ac984b@sentry.hyperweek.com/1'

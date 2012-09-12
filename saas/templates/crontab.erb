@@ -2,11 +2,6 @@ VENV_PATH=<%= venv %>
 PROJECT_PATH=<%= src %>
 LOG_PATH=<%= src %>/log
 
-# minutely
-* * * * * <%= cron_user %> cd $PROJECT_PATH && $VENV_PATH/bin/python manage.py process_search_queue >> $LOG_PATH/process_search_queue.log 2>&1
-*/5 * * * * <%= cron_user %> cd $PROJECT_PATH && $VENV_PATH/bin/python manage.py send_mail >> $LOG_PATH/send_mail.log 2>&1
-2,22,42 * * * * <%= cron_user %> cd $PROJECT_PATH && $VENV_PATH/bin/python manage.py retry_deferred >> $LOG_PATH/retry_deferred.log 2>&1
-
 # hourly
 @hourly <%= cron_user %> cd $PROJECT_PATH && $VENV_PATH/bin/python manage.py update_feeds --age=1 -k 2 -v 0 >> $LOG_PATH/update_feeds.log 2>&1
 
