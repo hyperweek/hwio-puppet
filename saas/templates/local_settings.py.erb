@@ -38,7 +38,15 @@ SESSION_KEY_PREFIX = 'sessionstore:<%= name %>'
 
 <% if user %>NEW_USER_NOTIFICATION_EMAILS = ('<%= user['email'] %>',)<% end %>
 
-HAYSTACK_SOLR_URL = config['solr']['path']
+HAYSTACK_CONNECTIONS = {
+    'default': {
+        'ENGINE': 'haystack.backends.solr_backend.SolrEngine',
+        'URL': config['solr']['path'],
+        'TIMEOUT': 60 * 5,
+        'INCLUDE_SPELLING': False,
+        'BATCH_SIZE': 100,
+    }
+}
 
 BROKER_URL = "redis://%s:%s/0" % (config['redis']['host'], config['redis']['port'])
 CELERY_DEFAULT_QUEUE = '<%= name %>:default'
