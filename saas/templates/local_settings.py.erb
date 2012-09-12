@@ -61,6 +61,7 @@ MEDIA_ROOT = '/mnt/%s/<%= name %>' % config['s3']['bucket']
 MEDIA_CACHE_ROOT = '/mnt/.cache/%s/<%= name %>' % config['s3']['bucket']
 MEDIA_URL = 'http://%s.s3.amazonaws.com/<%= name %>/' % config['s3']['bucket']
 
+STATIC_ROOT = '/mnt/static.hw.io/<%= name %>'
 STATIC_URL = "http://<%= domain %>/static/"
 COMPRESS_URL = STATIC_URL
 ADMIN_MEDIA_PREFIX =  '%sgrappelli/' % STATIC_URL

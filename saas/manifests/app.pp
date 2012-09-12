@@ -52,19 +52,18 @@ define saas::app($domain, $ensure=present) {
       group   => $nginx::group;
 
     "${site_dir}/public/static":
-      ensure  => $ensure ? {
-        present => directory,
-        default => $ensure,
-      },
-      recurse => true,
-      force   => true,
+      ensure  => link,
+      target  => "/mnt/static.hw.io/${name}",
       owner   => $nginx::owner,
-      group   => $nginx::group;
+      group   => $nginx::group,
+      require => File["/mnt/static.hw.io/${name}"];
 
     "${site_dir}/public/media":
-      ensure  => directory,
+      ensure  => link,
+      target  => "/mnt/media.hw.io/${name}",
       owner   => $nginx::owner,
-      group   => $nginx::group;
+      group   => $nginx::group,
+      require => File["/mnt/media.hw.io/${name}"];
 
     "${site_dir}/app":
       ensure  => directory;
@@ -90,7 +89,19 @@ define saas::app($domain, $ensure=present) {
       ensure  => present,
       source => 'puppet:///modules/saas/wsgi.py';
 
-    "${site_dir}/log":
+    "/var/log/${name}":
       ensure  => directory,
+
+    "/mnt/static.hw.io":
+      ensure  => directory,
+      owner   => 'root',
+      group   => 'root';
+
+    "/mnt/static.hw.io/${name}":
+      ensure  => directory,
+      recurse => true,
+      force   => true,
+      owner   => $nginx::owner,
+      group   => $nginx::group;
   }
 }

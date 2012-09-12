@@ -129,7 +129,7 @@ define saas::instance(
     ensure          => $ensure,
     command         => inline_template("<%= venv %>/bin/python manage.py celery worker -Q <%= name %>:default -c 1 -f <%= src %>/log/worker.log"),
     directory       => $src,
-    stdout_logfile  => "${src}/log/worker.log",
+    stdout_logfile  => "/var/log/${name}/worker.log",
   }
 
   # Cron configuration
