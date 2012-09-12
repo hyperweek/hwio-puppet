@@ -46,7 +46,10 @@ define saas::instance(
     "${src}/app/local_settings.py":
       ensure  => present,
       content => template("saas/local_settings.py.erb"),
-      notify  => Service["supervisor::${name}"];
+      notify  => [
+        Service["supervisor::${name}-web"],
+        Service["supervisor::${name}-worker"],
+      ];
 
     "${src}/app/fixtures/initial_data.yaml":
       ensure  => present,
@@ -93,7 +96,10 @@ define saas::instance(
       onlyif  => "test -d ${src}/public/static",
       user    => 'www-data',
       group   => 'www-data',
-      notify  => Service["supervisor::${name}-web"];
+      notify  => [
+        Service["supervisor::${name}-web"],
+        Service["supervisor::${name}-worker"],
+      ];
   }
 
   # Create leaf in mountpoint
