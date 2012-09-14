@@ -53,7 +53,10 @@ define saas::custom(
       "${src}/${name}/local_settings.py":
         ensure  => link,
         target  => "${src}/${name}/production_settings.py",
-        notify  => Service["supervisor::${name}"];
+        notify  => [
+          Service["supervisor::${name}-web"],
+          Service["supervisor::${name}-worker"],
+        ];
     }
   }
   else {
@@ -61,7 +64,18 @@ define saas::custom(
       "${src}/${name}/local_settings.py":
         ensure  => present,
         content => template("saas/local_settings.py.erb"),
-        notify  => Service["supervisor::${name}"];
+        notify  => [
+          Service["supervisor::${name}-web"],
+          Service["supervisor::${name}-worker"],
+        ];
+    }
+  }
+
+  if $user {
+    file {
+      "${src}/app/fixtures/initial_data.yaml":
+        ensure  => present,
+        content => template("saas/initial_data.yaml.erb");
     }
   }
 
@@ -103,7 +117,10 @@ define saas::custom(
       cwd     => $src,
       user    => "www-data",
       group   => "www-data",
-      notify  => Service["supervisor::${name}"];
+      notify  => [
+        Service["supervisor::${name}-web"],
+        Service["supervisor::${name}-worker"],
+      ];
   }
 
   # Create leaf in mountpoint
