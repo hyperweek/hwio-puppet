@@ -49,5 +49,5 @@ define saas::project($domain, $branch, $repository) {
     File["${site_dir}/public"] ->
     File["${site_dir}/public/static"] ->
     File["${site_dir}/public/media"] ->
-    File["${site_dir}/log"]
+    File["/var/log/${name}"]
 }
