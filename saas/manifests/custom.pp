@@ -129,6 +129,13 @@ define saas::custom(
     directory => $src,
   }
 
+  supervisor::service { "${name}-worker":
+    ensure          => $ensure,
+    command         => inline_template("<%= venv %>/bin/python manage.py celery worker -Q <%= name %>:default -c 1 -f <%= src %>/log/worker.log"),
+    directory       => $src,
+    stdout_logfile  => "/var/log/${name}/worker.log",
+  }
+
   # Cron configuration
   file { "/etc/cron.d/${name}-app":
     ensure  => $ensure,
@@ -139,6 +146,9 @@ define saas::custom(
   }
 
   # Dependency graph
+  S3fs::Do_mount[$::s3_bucket] ->
+  File["/mnt/$::s3_bucket/${name}"] ->
+
   Saas::Project[$name] ->
 
     File["${src}/hyperweek"] ->
@@ -154,11 +164,9 @@ define saas::custom(
     Exec["db-sync-all-${name}"] ->
     Exec["collectstatic-${name}"] ->
 
-    S3fs::Do_mount[$::s3_bucket] ->
-    File["/mnt/$::s3_bucket/${name}"] ->
-
     Uwsgi::App[$name] ->
     Nginx::App[$name] ->
+    Supervisor::Service["${name}-worker"] ->
 
     File["/etc/cron.d/${name}-app"]
 }

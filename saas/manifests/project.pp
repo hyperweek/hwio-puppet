@@ -27,7 +27,7 @@ define saas::project($domain, $branch, $repository) {
       group   => $nginx::group,
       mode    => '0755';
 
-    "${site_dir}/log":
+    "/var/log/${name}":
       ensure  => directory,
       owner   => $saas::user,
       group   => $saas::group,
