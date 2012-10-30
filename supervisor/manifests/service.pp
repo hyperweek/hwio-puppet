@@ -2,10 +2,10 @@ define supervisor::service(
   $ensure=present,
   $command,
   $directory,
-  $autostart="true",
-  $autorestart="true",
-  $redirect_stderr="true",
-  $stdout_logfile="") {
+  $autostart='true',
+  $autorestart='true',
+  $redirect_stderr='true',
+  $stdout_logfile='') {
 
   include supervisor::params
 
@@ -23,15 +23,15 @@ define supervisor::service(
 
   service {
     "supervisor::${name}":
-      ensure   => $is_present,
-      hasstatus => $is_present,
-      hasrestart => $is_present,
-      provider => base,
-      restart  => "/usr/bin/supervisorctl restart ${name}",
-      start    => "/usr/bin/supervisorctl start ${name}",
-      status   => "/usr/bin/supervisorctl status | awk '/^${name}/{print \$2}' | grep '^RUNNING$'",
-      stop     => "/usr/bin/supervisorctl stop ${name}",
-      require  => [
+      ensure      => $is_present,
+      hasstatus   => $is_present,
+      hasrestart  => $is_present,
+      provider    => base,
+      restart     => "/usr/bin/supervisorctl restart ${name}",
+      start       => "/usr/bin/supervisorctl start ${name}",
+      status      => "/usr/bin/supervisorctl status | awk '/^${name}/{print \$2}' | grep '^RUNNING$'",
+      stop        => "/usr/bin/supervisorctl stop ${name}",
+      require     => [
         Package[$supervisor::params::package],
         Service[$supervisor::params::system_service],
         File["${supervisor::params::confdir}/${name}.conf"],

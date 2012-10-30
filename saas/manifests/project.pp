@@ -27,11 +27,18 @@ define saas::project($domain, $branch, $repository) {
       group   => $nginx::group,
       mode    => '0755';
 
-    "/var/log/${name}":
+    '/var/log/apps':
       ensure  => directory,
       owner   => $saas::user,
       group   => $saas::group,
       mode    => '0755';
+
+    "/var/log/apps/${name}":
+      ensure  => directory,
+      owner   => $saas::user,
+      group   => $saas::group,
+      mode    => '0755',
+      require => File['/var/log/apps'];
   }
 
   exec {
@@ -49,5 +56,5 @@ define saas::project($domain, $branch, $repository) {
     File["${site_dir}/public"] ->
     File["${site_dir}/public/static"] ->
     File["${site_dir}/public/media"] ->
-    File["/var/log/${name}"]
+    File["/var/log/apps/${name}"]
 }

@@ -89,8 +89,12 @@ define saas::app($domain, $ensure=present) {
       ensure  => present,
       source => 'puppet:///modules/saas/wsgi.py';
 
-    "/var/log/${name}":
+    '/var/log/apps':
       ensure  => directory;
+
+    "/var/log/apps/${name}":
+      ensure  => directory,
+      require => File['/var/log/apps'];
 
     "/mnt/static.hw.io":
       ensure  => directory,

@@ -1,6 +1,6 @@
 VENV_PATH=<%= venv %>
 PROJECT_PATH=<%= src %>
-LOG_FILE=/var/log/<%= name %>/cron.log
+LOG_FILE=/var/log/apps/<%= name %>/cron.log
 
 # hourly
 @hourly <%= cron_user %> cd $PROJECT_PATH && $VENV_PATH/bin/python manage.py update_feeds --age=1 -k 2 -v 0 >> $LOG_FILE 2>&1

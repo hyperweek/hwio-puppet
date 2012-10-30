@@ -120,20 +120,21 @@ define saas::instance(
   }
 
   uwsgi::app { $name:
-    ensure    => $ensure,
-    venv      => $venv,
-    directory => $src,
+    ensure          => $ensure,
+    venv            => $venv,
+    directory       => $src,
+    stdout_logfile  => "/var/log/apps/${name}/web.log",
   }
 
   supervisor::service { "${name}-worker":
     ensure          => $ensure,
     command         => inline_template("<%= venv %>/bin/python manage.py celery worker -Q <%= name %>:default -c 1 -f /var/log/<%= name %>/worker.log"),
     directory       => $src,
-    stdout_logfile  => "/var/log/${name}/worker.log",
+    stdout_logfile  => "/var/log/apps/${name}/worker.log",
   }
 
   # Cron configuration
-  file { "/etc/cron.d/${name}-app":
+  file { "/etc/cron.d/apps-${name}-app":
     ensure  => $ensure,
     content => template('saas/crontab.erb'),
     owner   => 'root',
@@ -165,5 +166,5 @@ define saas::instance(
     Nginx::App[$name] ->
     Supervisor::Service["${name}-worker"] ->
 
-    File["/etc/cron.d/${name}-app"]
+    File["/etc/cron.d/apps-${name}-app"]
 }

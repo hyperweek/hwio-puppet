@@ -7,6 +7,6 @@
   notifempty
   create 640 <%= owner %> <%= group %>
   postrotate
-    /usr/bin/supervisorctl restart <% name %>-app
+    /usr/bin/supervisorctl restart <% name %>-web
   endscript
 }

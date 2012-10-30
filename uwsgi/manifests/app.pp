@@ -3,7 +3,8 @@ define uwsgi::app(
   $directory,
   $ensure=present,
   $workers=1,
-  $threads=15) {
+  $threads=15,
+  $stdout_logfile=undef) {
 
   include uwsgi::params
 
@@ -21,7 +22,10 @@ define uwsgi::app(
   $conffile = "${uwsgi::params::confdir}/${name}.ini"
   $pidfile = "${uwsgi::params::rundir}/${name}.pid"
   $socket = "${uwsgi::params::rundir}/${name}.sock"
-  $logfile = "${uwsgi::params::logdir}/${name}.log"
+  $logfile = $stdout_logfile ? {
+    undef   => "${uwsgi::params::logdir}/${name}.log",
+    default => $stdout_logfile
+  }
 
   if $is_present {
     python::pip::install {
@@ -38,12 +42,12 @@ define uwsgi::app(
 
   file { "${conffile}":
     ensure  => $ensure,
-    content => template("uwsgi/app.ini.erb");
+    content => template('uwsgi/app.ini.erb');
   }
 
   file { "/etc/logrotate.d/uwsgi-${name}":
     ensure  => $ensure,
-    content => template("uwsgi/logrotate.erb"),
+    content => template('uwsgi/logrotate.erb'),
   }
 
   supervisor::service { "${name}-web":
