@@ -155,6 +155,7 @@ define saas::custom(
     ensure          => $ensure,
     command         => inline_template("<%= venv %>/bin/python manage.py celery worker -Q <%= name %>:default -c 1 -f /var/log/<%= name %>/worker.log"),
     directory       => $src,
+    user            => $saas::user,
     stdout_logfile  => "/var/log/apps/${name}/worker.log",
   }
 
