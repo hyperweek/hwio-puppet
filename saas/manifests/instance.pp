@@ -30,11 +30,15 @@ define saas::instance(
   }
 
   # App settings
-  file {
-    "${src}/hyperweek":
-      ensure  => link,
-      target  => "${saas::hw_root}/hyperweek";
+  if !defined(File["${src}/hyperweek"]) {
+    file {
+      "${src}/hyperweek":
+        ensure  => link,
+        target  => "${saas::hw_root}/hyperweek";
+    }
+  }
 
+  file {
     "${src}/bundle_config.py":
       ensure  => present,
       source  => "puppet:///modules/saas/bundle_config.py";
