@@ -1,6 +1,8 @@
 [program:<%= name %>]
 command=<%= command %>
 directory=<%= directory %>
+<% if user %>user=<%= user %><% end %>
+stopsignal=QUIT
 autostart=<%= autostart %>
 autorestart=<%= autorestart %>
 redirect_stderr=<%= redirect_stderr %>

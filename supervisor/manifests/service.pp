@@ -2,6 +2,7 @@ define supervisor::service(
   $ensure=present,
   $command,
   $directory,
+  $user=undef,
   $autostart='true',
   $autorestart='true',
   $redirect_stderr='true',
