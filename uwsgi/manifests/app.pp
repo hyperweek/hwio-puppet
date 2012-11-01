@@ -1,9 +1,9 @@
 define uwsgi::app(
   $venv,
   $directory,
+  $version=undef,
   $ensure=present,
-  $workers=1,
-  $threads=15,
+  $env='',
   $stdout_logfile=undef) {
 
   include uwsgi::params
@@ -14,11 +14,6 @@ define uwsgi::app(
     mode  => '0644',
   }
 
-  $owner = $uwsgi::params::owner
-  $group = $uwsgi::params::group
-
-  $is_present = $ensure == 'present'
-
   $conffile = "${uwsgi::params::confdir}/${name}.ini"
   $pidfile = "${uwsgi::params::rundir}/${name}.pid"
   $socket = "${uwsgi::params::rundir}/${name}.sock"
@@ -27,10 +22,15 @@ define uwsgi::app(
     default => $stdout_logfile
   }
 
-  if $is_present {
+  $uwsgi_package = $version ? {
+    undef   => 'uwsgi',
+    default => "uwsgi==${version}",
+  }
+
+  if $ensure == 'present' {
     python::pip::install {
-      "uwsgi in $venv":
-        package => "uwsgi",
+      "${uwsgi_package} in ${venv}":
+        package => $uwsgi_package,
         ensure  => $ensure,
         venv    => $venv,
         owner   => $python::venv::owner,
@@ -40,20 +40,21 @@ define uwsgi::app(
     }
   }
 
-  file { "${conffile}":
-    ensure  => $ensure,
-    content => template('uwsgi/app.ini.erb');
-  }
+  file {
+    $conffile:
+      ensure  => $ensure,
+      content => template('uwsgi/app.ini.erb');
 
-  file { "/etc/logrotate.d/uwsgi-${name}":
-    ensure  => $ensure,
-    content => template('uwsgi/logrotate.erb'),
+    "/etc/logrotate.d/uwsgi-${name}":
+      ensure  => $ensure,
+      content => template('uwsgi/logrotate.erb');
   }
 
   supervisor::service { "${name}-web":
     ensure          => $ensure,
     command         => inline_template("<%= venv %>/bin/uwsgi --ini <%= conffile %>"),
     directory       => $directory,
+    env             => $env,
     stdout_logfile  => $logfile,
     subscribe       => File[$conffile];
   }

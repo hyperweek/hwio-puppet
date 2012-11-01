@@ -1,10 +1,11 @@
 [program:<%= name %>]
 command=<%= command %>
 directory=<%= directory %>
-<% if user %>user=<%= user %><% end %>
-stopsignal=QUIT
+numprocs=1
+user=<%= user %>
 autostart=<%= autostart %>
 autorestart=<%= autorestart %>
-redirect_stderr=<%= redirect_stderr %>
-<% if stdout_logfile %>stdout_logfile=<%= stdout_logfile %><% end %>
-stopsignal=QUIT
+stdout_logfile=<%= stdout_logfile %>
+stderr_logfile=<%= stdout_logfile %>
+stopsignal=<%= stopsignal %>
+<% if env %>environment=<%= env %><% end %>

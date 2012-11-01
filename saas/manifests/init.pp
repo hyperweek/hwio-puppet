@@ -1,13 +1,7 @@
-class saas(
-  $ensure=present,
-  $src_root="/srv/www",
-  $venv_root="/usr/local/venv",
-  $hw_root="/usr/local/src/hyperweek") {
+class saas($ensure=present) {
 
-  $user=$::dploi_user
-  $group=$::dploi_group
-  $venv_name = 'saas'
-  $venv = "${venv_root}/${venv_name}"
+  $user = $::dploi_user
+  $group = $::dploi_group
 
   include nginx
   include redis
@@ -19,44 +13,27 @@ class saas(
   include s3fs
   include uwsgi
 
-  class { "python::venv":
+  class { 'python::venv':
     ensure  => $ensure,
     owner   => $user,
     group   => $user,
   }
 
   file {
-    $src_root:
+    $::apps_root:
       ensure  => directory,
       owner   => 'root',
       group   => 'root',
       mode    => '0755';
-    $hw_root:
+    '/etc/apps':
       ensure  => directory,
-      owner   => $user,
-      group   => $group,
-      mode    => '0755',
-      notify  => Exec["git-clone-hyperweek"];
-  }
-
-  # TODO: ensure sshkeys !
-
-  exec { "git-clone-hyperweek":
-    command     => "/usr/bin/git clone --depth 1 -b master git@github.com:hyperweek/hyperweek.git $hw_root",
-    creates     => "$hw_root/.git",
-    user        => $user,
-    group       => $group,
-    refreshonly => true,
-  }
-
-  python::venv::isolate { $venv:
-    ensure        => $ensure,
-    requirements  => "${hw_root}/requirements.txt",
-    require       => Exec["git-clone-hyperweek"],
+      owner   => 'root',
+      group   => 'root',
+      mode    => '0755';
   }
 
   s3fs::do_mount { $::s3_bucket:
-    root        => "/mnt",
-    default_acl => "public-read",
+    root        => '/mnt',
+    default_acl => 'public-read',
   }
 }

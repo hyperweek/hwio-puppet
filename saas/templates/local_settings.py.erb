@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 from bundle_config import config
 
 <% if user %>MANAGERS = ('<%= user['email'] %>',)<% end %>
@@ -43,10 +44,12 @@ HAYSTACK_CONNECTIONS = {
         'ENGINE': 'haystack.backends.solr_backend.SolrEngine',
         'URL': config['solr']['path'],
         'TIMEOUT': 60 * 5,
-        'INCLUDE_SPELLING': False,
+        'INCLUDE_SPELLING': True,
         'BATCH_SIZE': 100,
     }
 }
+
+SECRET_KEY = '<%= secret_key %>'
 
 BROKER_URL = "redis://%s:%s/0" % (config['redis']['host'], config['redis']['port'])
 CELERY_DEFAULT_QUEUE = '<%= name %>:default'
@@ -61,10 +64,9 @@ MEDIA_ROOT = '/mnt/%s/<%= name %>' % config['s3']['bucket']
 MEDIA_CACHE_ROOT = '/mnt/.cache/%s/<%= name %>' % config['s3']['bucket']
 MEDIA_URL = 'http://%s.s3.amazonaws.com/<%= name %>/' % config['s3']['bucket']
 
-STATIC_ROOT = '/mnt/static.hw.io/<%= name %>'
+STATIC_ROOT = '<%= app_dir %>/public/static'
 STATIC_URL = "http://<%= domain %>/static/"
 COMPRESS_URL = STATIC_URL
-ADMIN_MEDIA_PREFIX =  '%sgrappelli/' % STATIC_URL
 
 VIDEO_BUCKET_NAME = 'assets.hw.io'
 VIDEO_MEDIA_URL = 'http://%s.s3.amazonaws.com/' % VIDEO_BUCKET_NAME
@@ -84,3 +86,7 @@ STATSD_PORT = 8125
 STATSD_CLIENT = 'django_statsd.clients.normal'
 
 SENTRY_DSN = 'http://b497015976ad412ca4a8704cf2ec41f4:94f56ab8ecd545b4940ffe4632ac984b@sentry.hyperweek.com/1'
+
+# DEBUG
+STATIC_URL = "http://<%= domain %>:8080/static/"
+COMPRESS_URL = STATIC_URL

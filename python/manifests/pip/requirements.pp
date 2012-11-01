@@ -37,5 +37,6 @@ define python::pip::requirements(
     subscribe   => Exec["create new checksum of $name requirements"],
     logoutput   => true,
     refreshonly => true,
+    timeout     => 0,
   }
 }

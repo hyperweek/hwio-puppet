@@ -5,4 +5,7 @@ class uwsgi::params {
     $confdir = '/etc/uwsgi/conf.d'
     $rundir = '/var/run/uwsgi'
     $logdir = '/var/log/uwsgi'
+
+    $workers = 1
+    $threads = 5
 }

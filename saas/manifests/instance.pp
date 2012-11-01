@@ -1,10 +1,13 @@
 define saas::instance(
-  $domain,
-  $user,
   $ensure=present,
+  $project='app',
+  $domain,
   $aliases=[],
-  $workers=1,
-  $timeout_seconds=30) {
+  $repository=undef,
+  $branch='master',
+  $hw_version=$::hw_version,
+  $production_settings=undef,
+  $user=false) {
 
   include uwsgi::params
 
@@ -14,8 +17,10 @@ define saas::instance(
     mode  => '0644',
   }
 
-  $venv = $saas::venv
-  $src = "${saas::src_root}/$domain"
+  $app_dir = "${::apps_root}/$name"
+  $project_dir = "${app_dir}/${project}"
+  $hw_dir = "${app_dir}/vendor/hyperweek-${hw_version}"
+  $venv = "${app_dir}/.venv"
   $socket = "${uwsgi::params::rundir}/${name}.sock"
   $cron_user = $saas::user
 
@@ -23,41 +28,69 @@ define saas::instance(
   $db_user = slice($name, 0, 16)
   $db_password = $name
 
+  $secret_key = sha1("${name}${::secret_salt}")
+
   # Source configuration
   saas::app { $name:
-    domain => $domain,
-    ensure => $ensure,
+    domain      => $domain,
+    repository  => $repository,
+    branch      => $branch,
+    app_dir     => $app_dir,
+    ensure      => $ensure,
+  }
+
+  exec {
+    "hyperweek-${hw_version}::download":
+      command => "/usr/bin/curl -H \"Authorization: token ${::github_token}\" -L -o /tmp/hyperweek.${hw_version}.tar.gz https://api.github.com/repos/hyperweek/hyperweek/tarball/${hw_version}",
+      creates => "/tmp/hyperweek.${hw_version}.tar.gz",
+      timeout => 300,
+      user    => $saas::user,
+      group   => $saas::group;
+
+    "hyperweek-${hw_version}::install":
+      command => "/bin/tar --no-same-owner -xzf /tmp/hyperweek.${hw_version}.tar.gz && /bin/mv hyperweek-hyperweek-* ${hw_dir}",
+      creates => $hw_dir,
+      cwd     => "${app_dir}/vendor",
+      require => Exec["hyperweek-${hw_version}::download"],
+      user    => $saas::user,
+      group   => $saas::group;
+  }
+
+  python::venv::isolate { $venv:
+    ensure        => $ensure,
+    requirements  => "${hw_dir}/requirements.txt",
+    cache_dir     => '/var/cache/venv',
   }
 
   # App settings
-  if !defined(File["${src}/hyperweek"]) {
-    file {
-      "${src}/hyperweek":
-        ensure  => link,
-        target  => "${saas::hw_root}/hyperweek";
-    }
-  }
-
   file {
-    "${src}/bundle_config.py":
+    "${app_dir}/hyperweek":
+      ensure => link,
+      target => "${hw_dir}/hyperweek";
+
+    "${app_dir}/bundle_config.py":
       ensure  => present,
       source  => "puppet:///modules/saas/bundle_config.py";
 
-    "${src}/app.ini":
+    "${app_dir}/app.ini":
       ensure  => present,
       content => template("saas/app.ini.erb");
 
-    "${src}/app/local_settings.py":
-      ensure  => present,
-      content => template("saas/local_settings.py.erb"),
-      notify  => [
-        Service["supervisor::${name}-web"],
-        Service["supervisor::${name}-worker"],
-      ];
+    "${project_dir}/fixtures/initial_data.yaml":
+        ensure  => present,
+        replace => false,
+        content => template("saas/initial_data.yaml.erb");
 
-    "${src}/app/fixtures/initial_data.yaml":
-      ensure  => present,
-      content => template("saas/initial_data.yaml.erb");
+    "${project_dir}/local_settings.py":
+        ensure  => present,
+        source  => $production_settings ? {
+          undef   => undef,
+          default => "file://${production_settings}",
+        },
+        content => $production_settings ? {
+          undef   => template("saas/local_settings.py.erb"),
+          default => undef,
+        };
   }
 
   # Solr
@@ -71,33 +104,37 @@ define saas::instance(
     password  => $db_password,
   }
 
-  $db_synced = "/usr/bin/mysql -h ${::mysql_host} -P ${::mysql_port} -u${name} -p${name} ${name} -e \"SELECT 1 FROM django_session;\""
+  $db_synced = "/usr/bin/mysql -h ${::mysql_host} -P ${::mysql_port} -u${db_user} -p${db_password} ${db_name} -e \"SELECT 1 FROM django_session;\""
 
   $sync_commands = [
     "${venv}/bin/python manage.py syncdb --noinput --all",
     "${venv}/bin/python manage.py migrate --fake",
-    "/usr/bin/mysql -h ${::mysql_host} -P ${::mysql_port} -u${name} -p${name} ${name} < ${saas::hw_root}/hyperweek/articleposts/sql/articleposts_views.sql",
-#    "${venv}/bin/python manage.py loaddata ${saas::hw_root}/hyperweek/fixtures/initial_data.yaml",
-    "${venv}/bin/python manage.py loaddata app/fixtures/initial_data.yaml",
+    "/usr/bin/mysql -h ${::mysql_host} -P ${::mysql_port} -u${name} -p${name} ${name} < ${hw_dir}/hyperweek/articleposts/sql/articleposts_views.sql",
+    "${venv}/bin/python manage.py loaddata ${hw_dir}/hyperweek/fixtures/initial_data.yaml",
+    "${venv}/bin/python manage.py loaddata ${project}/fixtures/initial_data.yaml",
     "${venv}/bin/python manage.py rebuild_index --noinput",
   ]
 
   exec {
-    "db-sync-${name}":
+    "${name}::db-sync":
       command => "${venv}/bin/python manage.py syncdb --noinput --migrate",
       onlyif  => $db_synced,
-      cwd     => $src;
+      cwd     => $app_dir;
 
-    "db-sync-all-${name}":
+    "${name}::db-sync-all":
       command => inline_template("<%= sync_commands.join(';') %>"),
       unless  => $db_synced,
-      cwd     => $src;
+      cwd     => $app_dir;
 
-    "collectstatic-${name}":
+    "${name}::db-sync-i18n":
+      command => "${venv}/bin/python manage.py sync_translation_fields --noinput",
+      cwd     => $app_dir;
+
+    "${name}::collectstatic":
       command => "${venv}/bin/python manage.py collectstatic --noinput -i \"*.less\" --ignore-errors",
-      cwd     => $src,
+      cwd     => $app_dir,
       path    => '/usr/bin:/usr/sbin:/bin',
-      onlyif  => "test -d ${src}/public/static",
+      onlyif  => "test -d ${app_dir}/public/static",
       user    => 'www-data',
       group   => 'www-data',
       notify  => [
@@ -119,27 +156,29 @@ define saas::instance(
     ensure    => $ensure,
     domain    => $domain,
     aliases   => $aliases,
-    www_root  => "${src}/public",
+    www_root  => "${app_dir}/public",
     upstreams => ["unix:${socket}"],
   }
 
   uwsgi::app { $name:
     ensure          => $ensure,
     venv            => $venv,
-    directory       => $src,
+    directory       => $app_dir,
+    env             => "DJANGO_PROJECT='${name}',PROJECT_ROOT='${project_dir}'",
     stdout_logfile  => "/var/log/apps/${name}/web.log",
   }
 
   supervisor::service { "${name}-worker":
     ensure          => $ensure,
-    command         => inline_template("<%= venv %>/bin/python manage.py celery worker -Q <%= name %>:default -c 1 -f /var/log/<%= name %>/worker.log"),
-    directory       => $src,
+    command         => inline_template("<%= venv %>/bin/python manage.py celery worker -Q <%= name %>:default -c 1"),
+    directory       => $app_dir,
+    env             => "DJANGO_PROJECT_DIR='${project_dir}'",  # See: http://stackoverflow.com/a/13147854
     user            => $saas::user,
     stdout_logfile  => "/var/log/apps/${name}/worker.log",
   }
 
   # Cron configuration
-  file { "/etc/cron.d/apps-${name}-app":
+  file { "/etc/cron.d/apps-${name}":
     ensure  => $ensure,
     content => template('saas/crontab.erb'),
     owner   => 'root',
@@ -153,23 +192,25 @@ define saas::instance(
 
   Saas::App[$name] ->
 
-    File["${src}/hyperweek"] ->
-    File["${src}/bundle_config.py"] ->
-    File["${src}/app/local_settings.py"] ->
-    File["${src}/app/fixtures/initial_data.yaml"] ->
-    File["${src}/app.ini"] ->
+    Exec["hyperweek-${hw_version}::install"] ->
+    File["${app_dir}/hyperweek"] ->
+    File["${app_dir}/bundle_config.py"] ->
+    File["${project_dir}/local_settings.py"] ->
+    File["${project_dir}/fixtures/initial_data.yaml"] ->
+    File["${app_dir}/app.ini"] ->
 
     Python::Venv::Isolate[$venv] ->
     Solr::Core[$name] ->
     Mysql::Client::Create_db[$db_name] ->
 
-    Exec["db-sync-${name}"] ->
-    Exec["db-sync-all-${name}"] ->
-    Exec["collectstatic-${name}"] ->
+    Exec["${name}::db-sync"] ->
+    Exec["${name}::db-sync-all"] ->
+    Exec["${name}::db-sync-i18n"] ->
+    Exec["${name}::collectstatic"] ->
 
     Uwsgi::App[$name] ->
     Nginx::App[$name] ->
     Supervisor::Service["${name}-worker"] ->
 
-    File["/etc/cron.d/apps-${name}-app"]
+    File["/etc/cron.d/apps-${name}"]
 }

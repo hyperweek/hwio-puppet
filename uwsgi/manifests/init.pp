@@ -7,13 +7,6 @@ class uwsgi($ensure=present) {
     }
   }
 
-  if $ensure == 'present' {
-    exec { 'pip install uwsgi':
-      creates   => '/usr/local/bin/uwsgi',
-      path      => ['/usr/local/bin',]
-    }
-  }
-
   $owner = $uwsgi::params::owner
   $group = $uwsgi::params::group
 

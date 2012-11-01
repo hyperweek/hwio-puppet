@@ -6,11 +6,11 @@ master=true
 pidfile=<%= pidfile %>
 socket=<%= socket %>
 logto=<%= logfile %>
-workers=<%= workers %>
-threads=<%= threads %>
-uid=<%= owner %>
-gid=<%= group %>
-harakiri=20
+workers=<%= scope.lookupvar('uwsgi::params::workers') %>
+threads=<%= scope.lookupvar('uwsgi::params::threads') %>
+uid=<%= scope.lookupvar('uwsgi::params::owner') %>
+gid=<%= scope.lookupvar('uwsgi::params::group') %>
+;harakiri=120
 idle=3600
 max-requests=5000
 vacuum=true

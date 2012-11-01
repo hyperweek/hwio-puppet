@@ -96,7 +96,6 @@
   </types>
 
   <fields>
-    <!-- general -->
     <field name="id" type="string" indexed="true" stored="true" multiValued="false" required="true"/>
     <field name="django_ct" type="string" indexed="true" stored="true" multiValued="false"/>
     <field name="django_id" type="string" indexed="true" stored="true" multiValued="false"/>
@@ -112,47 +111,26 @@
     <dynamicField name="*_p" type="location" indexed="true" stored="true"/>
     <dynamicField name="*_coordinate"  type="tdouble" indexed="true"  stored="false"/>
 
-
     <field name="author" type="text_en" indexed="true" stored="true" multiValued="false" />
-
     <field name="text" type="text_en" indexed="true" stored="true" multiValued="false" />
-
     <field name="tags" type="text_en" indexed="true" stored="true" multiValued="true" />
-
     <field name="tags_exact" type="string" indexed="true" stored="true" multiValued="true" />
-
     <field name="groups" type="text_en" indexed="true" stored="true" multiValued="true" />
-
     <field name="is_public" type="boolean" indexed="true" stored="true" multiValued="false" />
-
     <field name="pub_date" type="date" indexed="true" stored="true" multiValued="false" />
-
     <field name="popularity" type="long" indexed="true" stored="true" multiValued="false" />
-
     <field name="favorites" type="long" indexed="true" stored="true" multiValued="false" />
-
     <field name="content_auto" type="edge_ngram" indexed="true" stored="true" multiValued="false" />
-
     <field name="views" type="long" indexed="true" stored="true" multiValued="false" />
-
     <field name="title" type="text_en" indexed="true" stored="true" multiValued="false" />
-
     <field name="member_count" type="long" indexed="true" stored="true" multiValued="false" />
-
     <field name="channels" type="text_en" indexed="true" stored="true" multiValued="true" />
-
     <field name="group_type" type="long" indexed="true" stored="true" multiValued="false" />
-
     <field name="body" type="text_en" indexed="true" stored="true" multiValued="false" />
-
     <field name="link" type="text_en" indexed="true" stored="true" multiValued="false" />
-
     <field name="about" type="text_en" indexed="true" stored="true" multiValued="false" />
-
     <field name="screen_name" type="text_en" indexed="true" stored="true" multiValued="false" />
-
     <field name="contact_count" type="long" indexed="true" stored="true" multiValued="false" />
-
     <field name="updated_date" type="date" indexed="true" stored="true" multiValued="false" />
 
   </fields>

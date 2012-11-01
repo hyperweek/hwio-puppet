@@ -16,9 +16,12 @@ class mysql::client {
 
     exec { "grant-db-${name}":
       unless  => "/usr/bin/mysql -h ${::mysql_host} -P ${::mysql_port} -u${user} -p${password} '${name}'",
-      command => "/usr/bin/mysql $options -e \"GRANT ALL ON \\`${name}\\`.* TO '${user}'@'%' IDENTIFIED BY '$password';UPDATE mysql.user SET Password=PASSWORD('$password') where USER='$user';FLUSH PRIVILEGES;\"",
+      # Double GRANT because MySQL sucks: http://www.tikalk.com/alm/blog/solution-mysql-error-1045-access-denied-userlocalhost-breaks-openstack
+      command => "/usr/bin/mysql $options -e \"GRANT ALL ON \\`${name}\\`.* TO '${user}'@'%' IDENTIFIED BY '$password';GRANT ALL ON \\`${name}\\`.* TO '${user}'@'${::mysql_host}' IDENTIFIED BY '$password';UPDATE mysql.user SET Password=PASSWORD('$password') where USER='$user';FLUSH PRIVILEGES;\"",
     }
 
-    Package['mysql-client'] -> Exec["create-db-${name}"] -> Exec["grant-db-${name}"]
+    Package['mysql-client'] ->
+      Exec["create-db-${name}"] ->
+      Exec["grant-db-${name}"]
   }
 }

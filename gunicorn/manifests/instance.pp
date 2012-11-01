@@ -6,6 +6,7 @@ define gunicorn::instance(
   $django=false,
   $django_settings="",
   $version=undef,
+  $env=false,
   $workers=1,
   $timeout_seconds=30) {
 
@@ -14,8 +15,6 @@ define gunicorn::instance(
     group => 'root',
     mode  => '0644',
   }
-
-  $is_present = $ensure == "present"
 
   $rundir = $gunicorn::rundir
   $confdir = $gunicorn::confdir
@@ -42,13 +41,13 @@ define gunicorn::instance(
   }
 
   $gunicorn_package = $version ? {
-    undef => "gunicorn",
+    undef   => 'gunicorn',
     default => "gunicorn==${version}",
   }
 
-  if $is_present {
+  if $ensure == 'present' {
     python::pip::install {
-      "$gunicorn_package in $venv":
+      "${gunicorn_package} in ${venv}":
         package => $gunicorn_package,
         ensure  => $ensure,
         venv    => $venv,
@@ -88,21 +87,22 @@ define gunicorn::instance(
     }
   }
 
-  file { $conffile:
-    ensure  => $ensure,
-    content => template("gunicorn/gunicorn.conf.erb"),
-    require => File["/etc/logrotate.d/gunicorn-${name}"],
+  file {
+    $conffile:
+      ensure  => $ensure,
+      content => template("gunicorn/gunicorn.conf.erb"),
+      require => File["/etc/logrotate.d/gunicorn-${name}"];
+
+    "/etc/logrotate.d/gunicorn-${name}":
+      ensure  => $ensure,
+      content => template("gunicorn/logrotate.erb");
   }
 
-  file { "/etc/logrotate.d/gunicorn-${name}":
-    ensure  => $ensure,
-    content => template("gunicorn/logrotate.erb"),
-  }
-
-  supervisor::service { "${name}":
+  supervisor::service { "${name}-web":
     ensure          => $ensure,
     command         => inline_template("<%= venv %>/bin/gunicorn<% if django %>_django<% end %> -c <%= conffile %> <%= django ? django_settings : wsgi_module %> --log-file=<%= logfile %>"),
     directory       => $src,
+    env             => $env,
     stdout_logfile  => $logfile,
     subscribe       => File[$conffile],
   }

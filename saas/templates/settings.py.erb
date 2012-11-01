@@ -1,6 +1,8 @@
 # -*- coding: utf-8 -*-
 import os
 
+# Fixed this by using an .env file like heroku and loading it from
+# manage.py and supervisor.
 os.environ['DJANGO_PROJECT'] = '<%= name %>'
 os.environ['PROJECT_ROOT'] = os.path.abspath(os.path.dirname(__file__))
 
@@ -8,21 +10,6 @@ os.environ['PROJECT_ROOT'] = os.path.abspath(os.path.dirname(__file__))
 
 from hyperweek.conf.settings.default import *
 
-## Inherit from environment specifics
-
-DJANGO_CONF = os.environ.get('DJANGO_CONF', 'default')
-if DJANGO_CONF != 'default':
-    module = __import__(DJANGO_CONF, globals(), locals(), ['*'])
-    for k in dir(module):
-        if k.startswith('__'):
-            # Skip module level properties like __module__, __name__,
-            # because Django use it to load settings file.
-            pass
-        locals()[k] = getattr(module, k)
-
-## Define our project default
-
-SECRET_KEY = '<%= secret_key %>'
 
 ## Import local settings
 
@@ -33,6 +20,7 @@ except ImportError:
     sys.stderr.write("Warning: Can't find the file 'local_settings.py' in the directory containing %r. It appears you've customized things.\nYou'll have to run django-admin.py, passing it your settings module.\n(If the file settings.py does indeed exist, it's causing an ImportError somehow.)\n" % __file__)
     sys.stderr.write("\nFor debugging purposes, the exception was:\n\n")
     traceback.print_exc()
+
 
 ## Define our project global
 

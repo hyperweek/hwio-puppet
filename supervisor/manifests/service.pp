@@ -2,11 +2,12 @@ define supervisor::service(
   $ensure=present,
   $command,
   $directory,
-  $user=undef,
+  $env=false,
+  $stdout_logfile,
+  $user='root',
   $autostart='true',
   $autorestart='true',
-  $redirect_stderr='true',
-  $stdout_logfile='') {
+  $stopsignal='TERM') {
 
   include supervisor::params
 

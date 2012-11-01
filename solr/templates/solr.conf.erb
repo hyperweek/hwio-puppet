@@ -4,15 +4,6 @@
 
 start on runlevel [2345]
 stop on runlevel [06]
-stop on shutdown
-
 respawn
-script
-  cd /opt/solr/
-  exec sudo -u <%= user %> java\
-    -server \
-    -Dsolr.solr.home=/etc/solr \
-    -Djetty.logs=/var/log/solr \
-    -Dsolr.data.dir=/var/lib/solr \
-    -jar start.jar
-end script
+
+exec su - <%= user %> -c 'cd /opt/solr/; java -server -Xmx1024m -Dsolr.solr.home=/etc/solr -Djetty.logs=/var/log/solr -Dsolr.data.dir=/var/lib/solr -jar start.jar >> /var/log/solr/output.log 2>&1'

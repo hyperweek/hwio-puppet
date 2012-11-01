@@ -1,6 +1,7 @@
 define python::venv::isolate(
   $ensure=present,
   $version=latest,
+  $cache_dir=undef,
   $requirements=undef) {
 
   $root = $name
@@ -20,7 +21,11 @@ define python::venv::isolate(
       }
     }
 
-    $cachedir = "${root_parent}/.cache"
+    $cachedir = $cache_dir ? {
+      undef => "${root_parent}/.cache",
+      default => $cache_dir,
+    }
+
     file { $cachedir:
         ensure  => directory,
         owner   => $owner,

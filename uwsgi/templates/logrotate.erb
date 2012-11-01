@@ -5,7 +5,7 @@
   compress
   delaycompress
   notifempty
-  create 640 <%= owner %> <%= group %>
+  create 640 <%= scope.lookupvar('uwsgi::params::owner') %> <%= scope.lookupvar('uwsgi::params::group') %>
   postrotate
     /usr/bin/supervisorctl restart <% name %>-web
   endscript

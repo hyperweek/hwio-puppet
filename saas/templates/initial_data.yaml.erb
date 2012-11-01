@@ -3,12 +3,7 @@
     name: '<%= name.to_s.capitalize %> Community'
   model: sites.site
   pk: 1
-- fields:
-    title: Person
-    slug: person
-    description: ''
-  model: profiles.type
-  pk: 1
+<% if user %>
 - fields:
     email: <%= user['email'] %>
     first_name: <%= user['first_name'] %>
@@ -20,6 +15,17 @@
     username: <%= user['username'] %>
   model: auth.user
   pk: 1
+- fields:
+    activation_key: '7d77926597ae29f70c1d95da7748d031d4886f38'
+    country: CH
+    key_expires: '2007-06-16 08:39:51'
+    screen_name: <%= user['first_name'] %> <%= user['last_name'] %>
+    slug_name: <%= user['username'] %>
+    type: 1
+    user: 1
+  model: profiles.profile
+  pk: 1
+<% end %>
 - fields: {description: '', description_en: null, description_fr: null, featured: false,
     icon: '', is_active: true, level: 0, lft: 1, name: Groups, name_en: Groups, name_fr: Groupes,
     parent: null, rght: 2, slug: groups, tree_id: 1}
@@ -37,201 +43,6 @@
     name: german
   model: languages.language
   pk: de
-- fields: {content_type: 14, description: About this group, name: About, type: 1}
-  model: modules.module
-  pk: 14
-- fields: {content_type: 15, description: List of group activities, name: Activities,
-    type: 1}
-  model: modules.module
-  pk: 15
-- fields: {content_type: 2, description: List of articles sent to the group, name: Articles,
-    type: 1}
-  model: modules.module
-  pk: 2
-- fields: {content_type: 16, description: List of group audios, name: Audios, type: 1}
-  model: modules.module
-  pk: 16
-- fields: {content_type: 18, description: Live chat, name: Chat, type: 1}
-  model: modules.module
-  pk: 18
-- fields: {content_type: 3, description: 'List of group''s active discussions ', name: Discussions,
-    type: 1}
-  model: modules.module
-  pk: 3
-- fields: {content_type: 17, description: Live video feed, name: Live video, type: 1}
-  model: modules.module
-  pk: 17
-- fields: {content_type: 5, description: List of group's members, name: Members, type: 1}
-  model: modules.module
-  pk: 5
-- fields: {content_type: 6, description: List of photos sent to the group, name: Photos,
-    type: 1}
-  model: modules.module
-  pk: 6
-- fields: {content_type: 8, description: List of group videos, name: Videos, type: 1}
-  model: modules.module
-  pk: 8
-- fields: {content_type: 19, description: Send status updates, name: Status updates, type: 1}
-  model: modules.module
-  pk: 19
-
-- fields: {type: 1}
-  model: layouts.layout
-  pk: 1
-- fields: {type: 2}
-  model: layouts.layout
-  pk: 2
-- fields: {type: 3}
-  model: layouts.layout
-  pk: 3
-- fields: {type: 4}
-  model: layouts.layout
-  pk: 4
-- fields: {type: 5}
-  model: layouts.layout
-  pk: 5
-- fields: {type: 6}
-  model: layouts.layout
-  pk: 6
-- fields: {type: 7}
-  model: layouts.layout
-  pk: 7
-- fields: {layout: 1, is_module_container: true, name: !!python/unicode 'box_layout1_1',
-    order: 1, parent_box: null, position: 1, width: 2}
-  model: !!python/unicode 'layouts.box'
-  pk: 1
-- fields: {layout: 1, is_module_container: true, name: !!python/unicode 'box_layout1_2',
-    order: 2, parent_box: null, position: 3, width: 4}
-  model: !!python/unicode 'layouts.box'
-  pk: 2
-- fields: {layout: 2, is_module_container: false, name: !!python/unicode 'box_layout2_1',
-    order: 1, parent_box: null, position: 1, width: 2}
-  model: !!python/unicode 'layouts.box'
-  pk: 3
-- fields: {layout: 2, is_module_container: true, name: !!python/unicode 'box_layout2_2',
-    order: 2, parent_box: null, position: 3, width: 4}
-  model: !!python/unicode 'layouts.box'
-  pk: 4
-- fields: {layout: 2, is_module_container: true, name: !!python/unicode 'box_layout2_1_1',
-    order: 1, parent_box: 3, position: 1, width: 2}
-  model: !!python/unicode 'layouts.box'
-  pk: 5
-- fields: {layout: 2, is_module_container: false, name: !!python/unicode 'box_layout2_1_2',
-    order: 2, parent_box: 3, position: 1, width: 2}
-  model: !!python/unicode 'layouts.box'
-  pk: 6
-- fields: {layout: 2, is_module_container: true, name: !!python/unicode 'box_layout2_1_2_1',
-    order: 1, parent_box: 6, position: 1, width: 4}
-  model: !!python/unicode 'layouts.box'
-  pk: 7
-- fields: {layout: 2, is_module_container: true, name: !!python/unicode 'box_layout2_1_2_2',
-    order: 2, parent_box: 6, position: 3, width: 4}
-  model: !!python/unicode 'layouts.box'
-  pk: 8
-- fields: {layout: 3, is_module_container: true, name: !!python/unicode 'box_layout3_1',
-    order: 1, parent_box: null, position: 1, width: 4}
-  model: !!python/unicode 'layouts.box'
-  pk: 9
-- fields: {layout: 3, is_module_container: true, name: !!python/unicode 'box_layout3_2',
-    order: 2, parent_box: null, position: 3, width: 2}
-  model: !!python/unicode 'layouts.box'
-  pk: 10
-- fields: {layout: 4, is_module_container: false, name: !!python/unicode 'box_layout4_1',
-  order: 1, parent_box: null, position: 2, width: 1}
-  model: !!python/unicode 'layouts.box'
-  pk: 11
-- fields: {layout: 4, is_module_container: false, name: !!python/unicode 'box_layout4_2',
-  order: 2, parent_box: null, position: 2, width: 1}
-  model: !!python/unicode 'layouts.box'
-  pk: 12
-- fields: {layout: 4, is_module_container: true, name: !!python/unicode 'box_layout4_1_1',
-  order: 1, parent_box: 11, position: 1, width: 2}
-  model: !!python/unicode 'layouts.box'
-  pk: 13
-- fields: {layout: 4, is_module_container: true, name: !!python/unicode 'box_layout4_1_2',
-  order: 2, parent_box: 11, position: 3, width: 4}
-  model: !!python/unicode 'layouts.box'
-  pk: 14
-- fields: {layout: 4, is_module_container: true, name: !!python/unicode 'box_layout4_2_1',
-  order: 1, parent_box: 12, position: 1, width: 3}
-  model: !!python/unicode 'layouts.box'
-  pk: 15
-- fields: {layout: 4, is_module_container: true, name: !!python/unicode 'box_layout4_2_2',
-  order: 2, parent_box: 12, position: 3, width: 3}
-  model: !!python/unicode 'layouts.box'
-  pk: 16
-- fields: {layout: 5, is_module_container: false, name: !!python/unicode 'box_layout5_1',
-  order: 1, parent_box: null, position: 2, width: 1}
-  model: !!python/unicode 'layouts.box'
-  pk: 17
-- fields: {layout: 5, is_module_container: false, name: !!python/unicode 'box_layout5_2',
-  order: 2, parent_box: null, position: 2, width: 1}
-  model: !!python/unicode 'layouts.box'
-  pk: 18
-- fields: {layout: 5, is_module_container: true, name: !!python/unicode 'box_layout5_1_1',
-  order: 1, parent_box: 17, position: 1, width: 2}
-  model: !!python/unicode 'layouts.box'
-  pk: 19
-- fields: {layout: 5, is_module_container: true, name: !!python/unicode 'box_layout5_1_2',
-  order: 2, parent_box: 17, position: 3, width: 4}
-  model: !!python/unicode 'layouts.box'
-  pk: 20
-- fields: {layout: 5, is_module_container: true, name: !!python/unicode 'box_layout5_2_1',
-  order: 1, parent_box: 18, position: 1, width: 3}
-  model: !!python/unicode 'layouts.box'
-  pk: 21
-- fields: {layout: 5, is_module_container: true, name: !!python/unicode 'box_layout5_2_2',
-  order: 2, parent_box: 18, position: 3, width: 3}
-  model: !!python/unicode 'layouts.box'
-  pk: 22
-- fields: {layout: 6, is_module_container: false, name: !!python/unicode 'box_layout6_1',
-  order: 1, parent_box: null, position: 2, width: 1}
-  model: !!python/unicode 'layouts.box'
-  pk: 23
-- fields: {layout: 6, is_module_container: false, name: !!python/unicode 'box_layout6_2',
-  order: 2, parent_box: null, position: 2, width: 1}
-  model: !!python/unicode 'layouts.box'
-  pk: 24
-- fields: {layout: 6, is_module_container: true, name: !!python/unicode 'box_layout6_1_1',
-  order: 1, parent_box: 23, position: 1, width: 2}
-  model: !!python/unicode 'layouts.box'
-  pk: 25
-- fields: {layout: 6, is_module_container: true, name: !!python/unicode 'box_layout6_1_2',
-  order: 2, parent_box: 23, position: 3, width: 4}
-  model: !!python/unicode 'layouts.box'
-  pk: 26
-- fields: {layout: 6, is_module_container: true, name: !!python/unicode 'box_layout6_2_1',
-  order: 1, parent_box: 24, position: 1, width: 4}
-  model: !!python/unicode 'layouts.box'
-  pk: 27
-- fields: {layout: 6, is_module_container: true, name: !!python/unicode 'box_layout6_2_2',
-  order: 2, parent_box: 24, position: 3, width: 2}
-  model: !!python/unicode 'layouts.box'
-  pk: 28
-- fields: {layout: 7, is_module_container: false, name: !!python/unicode 'box_layout7_1',
-  order: 1, parent_box: null, position: 2, width: 1}
-  model: !!python/unicode 'layouts.box'
-  pk: 29
-- fields: {layout: 7, is_module_container: false, name: !!python/unicode 'box_layout7_2',
-  order: 2, parent_box: null, position: 2, width: 1}
-  model: !!python/unicode 'layouts.box'
-  pk: 30
-- fields: {layout: 7, is_module_container: true, name: !!python/unicode 'box_layout7_1_1',
-  order: 1, parent_box: 29, position: 1, width: 4}
-  model: !!python/unicode 'layouts.box'
-  pk: 31
-- fields: {layout: 7, is_module_container: true, name: !!python/unicode 'box_layout7_1_2',
-  order: 2, parent_box: 29, position: 3, width: 2}
-  model: !!python/unicode 'layouts.box'
-  pk: 32
-- fields: {layout: 7, is_module_container: true, name: !!python/unicode 'box_layout7_2_1',
-  order: 1, parent_box: 30, position: 1, width: 2}
-  model: !!python/unicode 'layouts.box'
-  pk: 33
-- fields: {layout: 7, is_module_container: true, name: !!python/unicode 'box_layout7_2_2',
-  order: 2, parent_box: 30, position: 3, width: 4}
-  model: !!python/unicode 'layouts.box'
-  pk: 34
 - fields:
     content: "<div class=\"span-19 last page-first-steps\">\r\n    \r\n    <div id=\"\
       you-content\" class=\"clearfix\">\r\n        \r\n\r\n<h2 class=\"less-margin-bottom\"\
