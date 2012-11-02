@@ -3,7 +3,7 @@ define uwsgi::app(
   $directory,
   $version=undef,
   $ensure=present,
-  $env='',
+  $env=false,
   $stdout_logfile=undef) {
 
   include uwsgi::params
