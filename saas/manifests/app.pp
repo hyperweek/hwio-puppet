@@ -11,59 +11,65 @@ define saas::app(
     mode  => '0644',
   }
 
+  file {
+    $app_dir:
+      ensure  => directory,
+      mode    => '0755';
+
+    "${app_dir}/vendor":
+      ensure  => directory,
+      mode    => '0755';
+
+    "${app_dir}/public":
+      ensure  => directory,
+      owner   => $nginx::owner,
+      group   => $nginx::group,
+      mode    => '0755';
+
+    "${app_dir}/public/static":
+      ensure  => directory,
+      owner   => $nginx::owner,
+      group   => $nginx::group,
+      mode    => '0755';
+
+    "${app_dir}/public/media":
+      ensure  => directory,
+      owner   => $nginx::owner,
+      group   => $nginx::group,
+      mode    => '0755';
+
+    '/var/log/apps':
+      ensure  => directory,
+      mode    => '0755';
+
+    "/var/log/apps/${name}":
+      ensure  => directory,
+      mode    => '0755',
+      require => File['/var/log/apps'];
+  }
+
   if $repository {
 
-    file {
-      "${app_dir}":
-        ensure  => directory,
-        mode    => '0755';
-
-      "${app_dir}/vendor":
-        ensure  => directory,
-        mode    => '0755';
-
-      "${app_dir}/public":
-        ensure  => directory,
-        owner   => $nginx::owner,
-        group   => $nginx::group,
-        mode    => '0755';
-
-      "${app_dir}/public/static":
-        ensure  => directory,
-        owner   => $nginx::owner,
-        group   => $nginx::group,
-        mode    => '0755';
-
-      "${app_dir}/public/media":
-        ensure  => directory,
-        owner   => $nginx::owner,
-        group   => $nginx::group,
-        mode    => '0755';
-
-      '/var/log/apps':
-        ensure  => directory,
-        mode    => '0755';
-
-      "/var/log/apps/${name}":
-        ensure  => directory,
-        mode    => '0755',
-        require => File['/var/log/apps'];
-    }
-
     exec {
-      "git-clone-${name}":
+      "${name}::install":
         cwd     => $app_dir,
         command => "/usr/bin/git clone -b ${branch} ${repository} .",
         creates => "${app_dir}/.git",
         user    => $saas::user,
         group   => $saas::group;
 
-      # TODO: git-pull
+      "${name}::update":
+        cwd     => $app_dir,
+        command => "/usr/bin/git clean -f && /usr/bin/git pull origin ${branch}",
+        user    => $saas::user,
+        group   => $saas::group;
     }
 
-    File["${app_dir}"] ->
-    Exec["git-clone-${name}"] ->
+    File[$app_dir] ->
+    Exec["${name}::install"] ->
+    Exec["${name}::update"] ->
 
+      File["${app_dir}/vendor"] ->
       File["${app_dir}/public"] ->
       File["${app_dir}/public/static"] ->
       File["${app_dir}/public/media"] ->
@@ -72,20 +78,6 @@ define saas::app(
   } else {
 
     file {
-      "${app_dir}":
-        ensure  => directory,
-        mode    => '0755';
-
-      "${app_dir}/vendor":
-        ensure  => directory,
-        mode    => '0755';
-
-      "${app_dir}/public":
-        ensure  => directory,
-        owner   => $nginx::owner,
-        group   => $nginx::group,
-        mode    => '0755';
-
       "${app_dir}/public/index.html":
         ensure  => present,
         source  => 'puppet:///modules/saas/index.html',
@@ -116,18 +108,6 @@ define saas::app(
         owner   => $nginx::owner,
         group   => $nginx::group;
 
-      "${app_dir}/public/static":
-        ensure  => directory,
-        owner   => $nginx::owner,
-        group   => $nginx::group,
-        mode    => '0755';
-
-      "${app_dir}/public/media":
-        ensure  => directory,
-        owner   => $nginx::owner,
-        group   => $nginx::group,
-        mode    => '0755';
-
       "${app_dir}/app":
         ensure  => directory,
         mode    => '0755';
@@ -154,15 +134,6 @@ define saas::app(
       "${app_dir}/wsgi.py":
         ensure  => present,
         source => 'puppet:///modules/saas/wsgi.py';
-
-      '/var/log/apps':
-        ensure  => directory,
-        mode    => '0755';
-
-      "/var/log/apps/${name}":
-        ensure  => directory,
-        require => File['/var/log/apps'],
-        mode    => '0755';
     }
   }
 }
