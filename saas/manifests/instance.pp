@@ -7,6 +7,7 @@ define saas::instance(
   $branch='master',
   $hw_version=$::hw_version,
   $production_settings=undef,
+  $rebuild_index=false,
   $user=false) {
 
   include uwsgi::params
@@ -133,14 +134,18 @@ define saas::instance(
     "${name}::collectstatic":
       command => "${venv}/bin/python manage.py collectstatic --noinput -i \"*.less\" --ignore-errors",
       cwd     => $app_dir,
-      path    => '/usr/bin:/usr/sbin:/bin',
-      onlyif  => "test -d ${app_dir}/public/static",
+      onlyif  => "/usr/bin/test -d ${app_dir}/public/static",
       user    => 'www-data',
       group   => 'www-data',
       notify  => [
         Service["supervisor::${name}-web"],
         Service["supervisor::${name}-worker"],
       ];
+
+    "${name}::rebuild-index":
+      command => "${venv}/bin/python manage.py rebuild_index --noinput",
+      cwd     => $app_dir,
+      refreshonly  => !$rebuild_index;
   }
 
   # Create leaf in mountpoint
@@ -207,6 +212,7 @@ define saas::instance(
     Exec["${name}::db-sync-all"] ->
     Exec["${name}::db-sync-i18n"] ->
     Exec["${name}::collectstatic"] ->
+    Exec["${name}::rebuild-index"] ->
 
     Uwsgi::App[$name] ->
     Nginx::App[$name] ->
