@@ -172,7 +172,7 @@ define saas::instance(
     ensure          => $ensure,
     command         => inline_template("<%= venv %>/bin/python manage.py celery worker -Q <%= name %>:default -c 1"),
     directory       => $app_dir,
-    env             => "DJANGO_PROJECT_DIR='${project_dir}'",  # See: http://stackoverflow.com/a/13147854
+    env             => "DJANGO_SETTINGS_MODULE='${project}.settings',DJANGO_PROJECT_DIR='${project_dir}'",  # See: http://stackoverflow.com/a/13147854
     user            => $saas::user,
     stdout_logfile  => "/var/log/apps/${name}/worker.log",
   }
