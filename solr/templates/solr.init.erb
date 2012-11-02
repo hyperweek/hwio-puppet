@@ -1,66 +1,91 @@
-#!/bin/sh -e
+#!/bin/sh
 ### BEGIN INIT INFO
-# Provides:       nginx
-# Required-Start:    $local_fs $remote_fs $network $syslog $named
-# Required-Stop:     $local_fs $remote_fs $network $syslog $named
-# Default-Start:     2 3 4 5
-# Default-Stop:      0 1 6
-# Short-Description: starts the solr search server
-# Description:       starts solr using start-stop-daemon
+# Provides:             solr
+# Required-Start:       $syslog $remote_fs
+# Required-Stop:        $syslog $remote_fs
+# Should-Start:         $local_fs
+# Should-Stop:          $local_fs
+# Default-Start:        2 3 4 5
+# Default-Stop:         0 1 6
+# Short-Description:    solr - Open source enterprise search platform
+# Description:          solr - Open source enterprise search platform
 ### END INIT INFO
 
-NAME="<%= user %>"
-PIDFILE="/var/run/solr.pid"
-LOG_FILE="/var/log/solr/output.log"
-SOLR_DIR="/opt/solr"
-DAEMON_OPTIONS="-server -Xmx1024m -DSTOP.PORT=8079 -DSTOP.KEY=stopkey -Dsolr.solr.home=/etc/solr -Djetty.logs=/var/log/solr -Dsolr.data.dir=/var/lib/solr -jar start.jar"
-DAEMON="/usr/bin/java"
-USER=solr
+PATH=/usr/local/sbin:/usr/local/bin:/sbin:/bin:/usr/sbin:/usr/bin
+DAEMON=/usr/bin/java
+DAEMON_ARGS="-server -Xmx1024m -DSTOP.PORT=8079 -DSTOP.KEY=stopkey -Dsolr.solr.home=/etc/solr -Djetty.logs=/var/log/solr -Dsolr.data.dir=/var/lib/solr -jar start.jar"
+NAME=solr
+DESC=solr
+
+PIDFILE=/var/run/solr.pid
+LOG_FILE=/var/log/solr/output.log
+SOLR_DIR=/opt/solr
+USER=<%= user %>
+
+test -x $DAEMON || exit 0
+
+if [ -r /etc/default/$NAME ]; then
+  . /etc/default/$NAME
+fi
 
 set -e
 
 start() {
-  echo -n "Starting $NAME... "
+  echo -n "Starting $DESC: "
+
+  if [ -n "$ULIMIT" ]; then
+    ulimit -n $ULIMIT
+  fi
+
   if [ -f $PIDFILE ]; then
-    echo "is already running!"
+    echo "already running!"
   else
     cd $SOLR_DIR
-    sudo -u $USER $DAEMON $DAEMON_OPTIONS >> $LOG_FILE 2>&1 &
+    sudo -u $USER $DAEMON $DAEMON_ARGS >> $LOG_FILE 2>&1 &
     sleep 2
     echo `ps -ef | grep -v grep | grep java | awk '{print $2}'` > $PIDFILE
-    echo "(Done)"
+    echo "$NAME."
   fi
-  return 0
 }
 
 stop() {
-  echo -n "Stopping $NAME... "
+  echo -n "Stopping $DESC: "
+
   if [ -f $PIDFILE ]; then
     cd $SOLR_DIR
-    sudo -u $USER $DAEMON $DAEMON_OPTIONS --stop
+    sudo -u $USER $DAEMON $DAEMON_ARGS --stop
     sleep 2
     rm $PIDFILE
-    echo "(Done)"
+    echo "$NAME."
   else
-    echo "can not stop, it is not running!"
+    echo "not running!"
   fi
-  return 0
 }
 
 case "$1" in
   start)
     start
-  ;;
+    ;;
   stop)
     stop
-  ;;
+    ;;
   restart)
     stop
-    sleep 5
     start
-  ;;
+    ;;
+  status)
+    echo -n "$DESC is "
+    if [ -f $PIDFILE ]; then
+      echo "running"
+    else
+      echo "not running"
+      exit 1
+    fi
+    ;;
   *)
-    echo "Usage: $0 (start | stop | restart)"
+    echo "Usage: /etc/init.d/$NAME {start|stop|restart|status}" >&2
     exit 1
+    ;;
 esac
 
+exit 0

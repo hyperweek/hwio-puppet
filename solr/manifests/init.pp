@@ -209,16 +209,10 @@ class solr($user='solr', $group='solr') {
 
   service { 'solr':
     # provider    => upstart,
-    provider    => debian,
+    provider    => init,
     ensure      => running,
     hasrestart  => true,
     hasstatus   => true,
     subscribe   => File['/etc/init/solr.conf'],
-    # before      => Exec['solr::warmup'],
   }
-
-  # exec { 'solr::warmup':
-  #   command => 'sleep 5s',
-  #   path    => '/bin',
-  # }
 }
