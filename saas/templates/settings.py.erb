@@ -65,7 +65,7 @@ if 'DISABLED_APPS' in locals():
 ## Cache loader
 if not DEBUG:
     TEMPLATE_LOADERS = (
-        ('mobileme.loaders.cached.Loader', TEMPLATE_LOADERS),
+        ('django.template.loaders.cached.Loader', TEMPLATE_LOADERS),
     )
 
 ## Celery
