@@ -75,7 +75,8 @@ define saas::instance(
 
     "${app_dir}/app.ini":
       ensure  => present,
-      content => template("saas/app.ini.erb");
+      content => template("saas/app.ini.erb"),
+      replace => false;
 
     "${project_dir}/fixtures/initial_data.yaml":
         ensure  => present,
