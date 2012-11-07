@@ -112,6 +112,7 @@
     <dynamicField name="*_coordinate"  type="tdouble" indexed="true"  stored="false"/>
 
     <field name="author" type="text_en" indexed="true" stored="true" multiValued="false" />
+    <field name="user" type="int" indexed="true" stored="true" multiValued="false" />
     <field name="text" type="text_en" indexed="true" stored="true" multiValued="false" />
     <field name="tags" type="text_en" indexed="true" stored="true" multiValued="true" />
     <field name="tags_exact" type="string" indexed="true" stored="true" multiValued="true" />
