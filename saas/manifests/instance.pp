@@ -144,9 +144,10 @@ define saas::instance(
       ];
 
     "${name}::rebuild-index":
-      command => "${venv}/bin/python manage.py rebuild_index --noinput",
-      cwd     => $app_dir,
-      refreshonly  => !$rebuild_index;
+      command     => "${venv}/bin/python manage.py rebuild_index --noinput",
+      cwd         => $app_dir,
+      refreshonly => !$rebuild_index,
+      timeout     => 0;
   }
 
   # Create leaf in mountpoint
