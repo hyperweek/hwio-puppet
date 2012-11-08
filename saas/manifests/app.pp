@@ -45,6 +45,7 @@ define saas::app(
     "/var/log/apps/${name}":
       ensure  => directory,
       mode    => '0755',
+      recurse => true,
       require => File['/var/log/apps'];
   }
 
