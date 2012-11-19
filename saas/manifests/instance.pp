@@ -18,6 +18,8 @@ define saas::instance(
     mode  => '0644',
   }
 
+  $is_present = $ensure == "present"
+
   $app_dir = "${::apps_root}/$name"
   $project_dir = "${app_dir}/${project}"
   $hw_dir = "${app_dir}/vendor/hyperweek-${hw_version}"
@@ -44,6 +46,7 @@ define saas::instance(
     "hyperweek-${hw_version}::download":
       command => "/usr/bin/curl -H \"Authorization: token ${::github_token}\" -L -o /tmp/hyperweek.${hw_version}.tar.gz https://api.github.com/repos/hyperweek/hyperweek/tarball/${hw_version}",
       creates => "/tmp/hyperweek.${hw_version}.tar.gz",
+      refreshonly => !$is_present,
       timeout => 300,
       user    => $saas::user,
       group   => $saas::group;
@@ -53,6 +56,7 @@ define saas::instance(
       creates => $hw_dir,
       cwd     => "${app_dir}/vendor",
       require => Exec["hyperweek-${hw_version}::download"],
+      refreshonly => !$is_present,
       user    => $saas::user,
       group   => $saas::group;
   }
@@ -120,17 +124,20 @@ define saas::instance(
   exec {
     "${name}::db-sync":
       command => "${venv}/bin/python manage.py syncdb --noinput --migrate",
+      cwd     => $app_dir,
       onlyif  => $db_synced,
-      cwd     => $app_dir;
+      refreshonly => !$is_present;
 
     "${name}::db-sync-all":
       command => inline_template("<%= sync_commands.join(';') %>"),
+      cwd     => $app_dir,
       unless  => $db_synced,
-      cwd     => $app_dir;
+      refreshonly => !$is_present;
 
     "${name}::db-sync-i18n":
       command => "${venv}/bin/python manage.py sync_translation_fields --noinput",
-      cwd     => $app_dir;
+      cwd     => $app_dir,
+      refreshonly => !$is_present;
 
     "${name}::collectstatic":
       command => "${venv}/bin/python manage.py collectstatic --noinput -i \"*.less\" --ignore-errors",
@@ -141,7 +148,8 @@ define saas::instance(
       notify  => [
         Service["supervisor::${name}-web"],
         Service["supervisor::${name}-worker"],
-      ];
+      ],
+      refreshonly => !$is_present;
 
     "${name}::rebuild-index":
       command     => "${venv}/bin/python manage.py rebuild_index --noinput",
