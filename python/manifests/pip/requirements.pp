@@ -6,7 +6,6 @@ define python::pip::requirements(
   $group=undef) {
 
   $requirements = $name
-  $checksum = "$venv/requirements.checksum"
 
   Exec {
     user  => $owner,
@@ -23,20 +22,10 @@ define python::pip::requirements(
 # the contents of this file changes.",
   }
 
-  # We create a sha1 checksum of the requirements file so that
-  # we can detect when it changes:
-  exec { "create new checksum of $name requirements":
-    command => "/usr/bin/sha1sum $requirements > $checksum",
-    unless  => "/usr/bin/sha1sum -c $checksum",
-    require => File[$requirements],
-  }
-
-  exec { "update $name requirements":
-    command     => "$venv/bin/pip install -M --download-cache=$cachedir -U -r $requirements",
+  exec { "install $name requirements":
+    command     => "$venv/bin/pip install -M --download-cache=$cachedir -r $requirements",
     cwd         => $venv,
-    subscribe   => Exec["create new checksum of $name requirements"],
     logoutput   => true,
-    refreshonly => true,
     timeout     => 0,
   }
 }
