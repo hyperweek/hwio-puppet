@@ -23,7 +23,7 @@ define python::pip::requirements(
   }
 
   exec { "install $name requirements":
-    command     => "$venv/bin/pip install -M --download-cache=$cachedir -r $requirements",
+    command     => "/usr/bin/yes w | $venv/bin/pip install -M --download-cache=$cachedir -r $requirements",
     cwd         => $venv,
     logoutput   => true,
     timeout     => 0,
