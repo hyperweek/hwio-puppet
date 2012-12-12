@@ -160,9 +160,9 @@ class solr(
   file {
     '/etc/init/solr.conf':
       ensure  => present,
-      # content => template('solr/solr.conf.erb'),
-      path    => '/etc/init.d/solr',
-      content => template('solr/solr.init.erb'),
+      content => template('solr/solr.conf.erb'),
+      # path    => '/etc/init.d/solr',
+      # content => template('solr/solr.init.erb'),
       owner   => 'root',
       group   => 'root',
       # mode    => '0644',
@@ -189,8 +189,8 @@ class solr(
   }
 
   service { 'solr':
-    # provider    => upstart,
-    provider    => init,
+    provider    => upstart,
+    # provider    => init,
     ensure      => running,
     hasrestart  => true,
     hasstatus   => true,
