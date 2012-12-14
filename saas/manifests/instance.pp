@@ -59,12 +59,19 @@ define saas::instance(
       refreshonly => !$is_present,
       user    => $saas::user,
       group   => $saas::group;
+
+    "${app_dir}/reqs.txt":
+      command => "cat ${hw_dir}/requirements.txt ${app_dir}/requirements.txt > ${app_dir}/reqs.txt 2>/dev/null",
+      cwd     => ${app_dir},
+      user    => $saas::user,
+      group   => $saas::group;
   }
 
   python::venv::isolate { $venv:
     ensure        => $ensure,
-    requirements  => "${hw_dir}/requirements.txt",
+    requirements  => "${app_dir}/reqs.txt",
     cache_dir     => '/var/cache/venv',
+    require       => Exec["${app_dir}/reqs.txt"],
   }
 
   # App settings
