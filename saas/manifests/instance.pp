@@ -47,9 +47,7 @@ define saas::instance(
       command => "/usr/bin/curl -H \"Authorization: token ${::github_token}\" -L -o /tmp/hyperweek.${hw_version}.tar.gz https://api.github.com/repos/hyperweek/hyperweek/tarball/${hw_version}",
       creates => "/tmp/hyperweek.${hw_version}.tar.gz",
       refreshonly => !$is_present,
-      timeout => 300,
-      user    => $saas::user,
-      group   => $saas::group;
+      timeout => 300;
 
     "hyperweek-${hw_version}::install":
       command => "/bin/tar --no-same-owner -xzf /tmp/hyperweek.${hw_version}.tar.gz && /bin/mv hyperweek-hyperweek-* ${hw_dir}",
@@ -60,18 +58,24 @@ define saas::instance(
       user    => $saas::user,
       group   => $saas::group;
 
+    "/tmp/${name}-reqs.txt":
+      command     => "/bin/cat ${hw_dir}/requirements.txt ${app_dir}/requirements.txt > /tmp/${name}-reqs.txt 2>/dev/null",
+      refreshonly => !$is_present;
+  }
+
+  file {
     "${app_dir}/reqs.txt":
-      command => "/bin/cat ${hw_dir}/requirements.txt ${app_dir}/requirements.txt > ${app_dir}/reqs.txt 2>/dev/null",
-      cwd     => $app_dir,
-      user    => $saas::user,
-      group   => $saas::group;
+      ensure      => present,
+      source      => "/tmp/${name}-reqs.txt",
+      refreshonly => !$is_present,
+      require     => Exec["/tmp/${name}-reqs.txt"],
   }
 
   python::venv::isolate { $venv:
     ensure        => $ensure,
     requirements  => "${app_dir}/reqs.txt",
     cache_dir     => '/var/cache/venv',
-    require       => Exec["${app_dir}/reqs.txt"],
+    require       => File["${app_dir}/reqs.txt"],
   }
 
   # App settings
