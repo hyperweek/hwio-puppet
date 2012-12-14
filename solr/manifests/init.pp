@@ -190,7 +190,7 @@ class solr(
 
   service { 'solr':
     # provider    => upstart,
-    provider    => debian,
+    provider    => init,
     ensure      => running,
     hasrestart  => true,
     hasstatus   => true,
@@ -199,6 +199,16 @@ class solr(
       File['/etc/solr/conf/solrconfig.xml'],
       File['/etc/solr/conf/schema.xml'],
     ],
+  }
+
+  # Only when dealing with init scipt on Ubuntu.
+  exec {
+    'solr-runlevels':
+      cwd         => '/usr/sbin/update-rc.d solr defaults',
+      refreshonly => true,
+      subscribe   => File['/etc/init/solr.conf'],
+      user        => 'root',
+      group       => 'root';
   }
 
   # Dependency graph
