@@ -59,15 +59,13 @@ define saas::instance(
       group   => $saas::group;
 
     "/tmp/${name}-reqs.txt":
-      command     => "/bin/cat ${hw_dir}/requirements.txt ${app_dir}/requirements.txt > /tmp/${name}-reqs.txt 2>/dev/null",
-      refreshonly => !$is_present;
+      command     => "/bin/cat ${hw_dir}/requirements.txt ${app_dir}/requirements.txt > /tmp/${name}-reqs.txt 2>/dev/null";
   }
 
   file {
     "${app_dir}/reqs.txt":
       ensure      => present,
       source      => "/tmp/${name}-reqs.txt",
-      refreshonly => !$is_present,
       require     => Exec["/tmp/${name}-reqs.txt"];
   }
 
