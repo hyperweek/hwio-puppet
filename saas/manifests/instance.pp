@@ -59,7 +59,7 @@ define saas::instance(
       group   => $saas::group;
 
     "/tmp/${name}-reqs.txt":
-      command     => "/bin/cat ${hw_dir}/requirements.txt ${app_dir}/requirements.txt > /tmp/${name}-reqs.txt 2>/dev/null";
+      command => "/bin/cat ${hw_dir}/requirements.txt ${app_dir}/requirements.txt > /tmp/${name}-reqs.txt 2>/dev/null | exit 0";
   }
 
   file {
