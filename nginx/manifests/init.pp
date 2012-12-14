@@ -31,30 +31,30 @@ class nginx(
   }
 
   file {
-    "/etc/nginx/nginx.conf":
+    '/etc/nginx/nginx.conf':
       ensure  => $ensure,
-      content => template("nginx/nginx.conf.erb"),
+      content => template('nginx/nginx.conf.erb'),
       notify  => Service['nginx'],
       require => Package['nginx'];
 
-    "/etc/nginx/mime.types":
+    '/etc/nginx/mime.types':
       ensure  => $ensure,
-      source  => "puppet:///modules/nginx/mime.types",
+      source  => 'puppet:///modules/nginx/mime.types',
       notify  => Service['nginx'],
-      require => File["/etc/nginx/nginx.conf"];
+      require => File['/etc/nginx/nginx.conf'];
 
-    "/etc/logrotate.d/nginx":
+    '/etc/logrotate.d/nginx':
       ensure  => $ensure,
-      source  => "puppet:///modules/nginx/nginx.logrotate",
-      require => File["/etc/nginx/nginx.conf"];
+      source  => 'puppet:///modules/nginx/nginx.logrotate',
+      require => File['/etc/nginx/nginx.conf'];
 
-    "/etc/nginx/sites-available/default":
+    '/etc/nginx/sites-available/default':
       ensure  => $ensure,
-      content => template("nginx/nginx_default.erb"),
+      content => template('nginx/nginx_default.erb'),
       require => Package['nginx'],
       notify  => Service['nginx'];
 
-    "/etc/nginx/sites-enabled/default":
+    '/etc/nginx/sites-enabled/default':
       ensure  => $ensure ? {
         'present' => link,
         'absent'  => $ensure,
