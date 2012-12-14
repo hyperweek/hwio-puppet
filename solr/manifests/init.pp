@@ -190,7 +190,7 @@ class solr(
 
   service { 'solr':
     # provider    => upstart,
-    provider    => init,
+    provider    => debian,
     ensure      => running,
     hasrestart  => true,
     hasstatus   => true,
