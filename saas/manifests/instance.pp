@@ -68,14 +68,14 @@ define saas::instance(
       ensure      => present,
       source      => "/tmp/${name}-reqs.txt",
       refreshonly => !$is_present,
-      require     => Exec["/tmp/${name}-reqs.txt"],
+      require     => Exec["/tmp/${name}-reqs.txt"];
   }
 
   python::venv::isolate { $venv:
     ensure        => $ensure,
     requirements  => "${app_dir}/reqs.txt",
     cache_dir     => '/var/cache/venv',
-    require       => File["${app_dir}/reqs.txt"],
+    require       => File["${app_dir}/reqs.txt"];
   }
 
   # App settings
