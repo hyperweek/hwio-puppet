@@ -61,7 +61,7 @@ define saas::instance(
       group   => $saas::group;
 
     "${app_dir}/reqs.txt":
-      command => "cat ${hw_dir}/requirements.txt ${app_dir}/requirements.txt > ${app_dir}/reqs.txt 2>/dev/null",
+      command => "/bin/cat ${hw_dir}/requirements.txt ${app_dir}/requirements.txt > ${app_dir}/reqs.txt 2>/dev/null",
       cwd     => $app_dir,
       user    => $saas::user,
       group   => $saas::group;
