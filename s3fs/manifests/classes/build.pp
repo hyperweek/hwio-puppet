@@ -37,7 +37,7 @@ class s3fs::build {
   # http://www.redmine.org/projects/redmine/wiki/RedmineInstallUbuntuLucid
   if ($lsbdistcodename == 'lucid') {
     exec { "patch fuse requirements":
-      onlyif  => '/usr/bin/test -n `/usr/bin/awk '/2.8.1/' configure.ac`',
+      onlyif  => "/usr/bin/test -n `/usr/bin/awk '/2.8.1/' configure.ac`",
       cwd     => "/root/s3fs-${version}",
       command => "/usr/bin/find . -type f -name \"configure*\" -exec /bin/sed -i -e \"s/2.8.4/2.8.1/g\" {} \\;",
       require => [ Package[$prereqs], Exec['extract s3fs'], ],
@@ -55,7 +55,7 @@ class s3fs::build {
   }
 
   # Build s3fs:
-  exec { "make s3fs":
+  exec { 'make s3fs':
     creates => "/root/s3fs-${version}/src/s3fs",
     cwd     => "/root/s3fs-${version}",
     command => '/usr/bin/make',
