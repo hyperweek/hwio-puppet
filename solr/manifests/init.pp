@@ -204,9 +204,9 @@ class solr(
   # Only when dealing with init scipt on Ubuntu.
   exec {
     'solr-runlevels':
-      cwd         => '/usr/sbin/update-rc.d solr defaults',
-      refreshonly => true,
+      command     => '/usr/sbin/update-rc.d solr defaults',
       subscribe   => File['/etc/init/solr.conf'],
+      refreshonly => true,
       user        => 'root',
       group       => 'root';
   }
