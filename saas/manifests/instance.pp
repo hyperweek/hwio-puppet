@@ -58,22 +58,16 @@ define saas::instance(
       user    => $saas::user,
       group   => $saas::group;
 
-    "/tmp/${name}-reqs.txt":
-      command => "/bin/cat ${hw_dir}/requirements.txt ${app_dir}/requirements.txt > /tmp/${name}-reqs.txt 2>/dev/null | exit 0";
-  }
-
-  file {
     "${app_dir}/reqs.txt":
-      ensure      => present,
-      source      => "/tmp/${name}-reqs.txt",
-      require     => Exec["/tmp/${name}-reqs.txt"];
+      command => "/bin/cat ${hw_dir}/requirements.txt ${app_dir}/requirements.txt > ${app_dir}/reqs.txt 2>/dev/null | exit 0",
+      user    => $saas::user,
+      group   => $saas::group;
   }
 
   python::venv::isolate { $venv:
     ensure        => $ensure,
     requirements  => "${app_dir}/reqs.txt",
-    cache_dir     => '/var/cache/venv',
-    require       => File["${app_dir}/reqs.txt"];
+    cache_dir     => '/var/cache/venv';
   }
 
   # App settings
@@ -223,6 +217,7 @@ define saas::instance(
     File["${project_dir}/fixtures/initial_data.yaml"] ->
     File["${app_dir}/app.ini"] ->
 
+    Exec["${app_dir}/reqs.txt"] ->
     Python::Venv::Isolate[$venv] ->
     Solr::Core[$name] ->
     Mysql::Client::Create_db[$db_name] ->
