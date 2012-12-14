@@ -59,7 +59,8 @@ define saas::instance(
       group   => $saas::group;
 
     "${app_dir}/reqs.txt":
-      command => "/bin/cat ${hw_dir}/requirements.txt ${app_dir}/requirements.txt > ${app_dir}/reqs.txt 2>/dev/null | exit 0",
+      command => "/bin/cat ${hw_dir}/requirements.txt ${app_dir}/requirements.txt > ${app_dir}/reqs.txt 2>/dev/null",
+      returns => [0, 1],
       user    => $saas::user,
       group   => $saas::group;
   }
