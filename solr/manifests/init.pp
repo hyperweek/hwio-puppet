@@ -26,7 +26,7 @@ class solr(
     "/tmp/apache-solr-${version}.tgz":
       cwd => '/tmp',
       creates => "/tmp/apache-solr-${version}.tgz",
-      command => "/usr/bin/wget http://ftp.heanet.ie/mirrors/www.apache.org/dist/lucene/solr/${version}/apache-solr-${version}.tgz",
+      command => "/usr/bin/wget http://archive.apache.org/dist/lucene/solr/${version}/apache-solr-${version}.tgz",
       timeout => 300,
       require => Package[$prereqs];
 
