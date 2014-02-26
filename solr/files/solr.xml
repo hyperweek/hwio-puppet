@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <solr sharedLib="lib" persistent="true">
-  <cores adminPath="/admin/cores" shareSchema="true">
+  <cores adminPath="/admin/cores" shareSchema="false">
   </cores>
 </solr>

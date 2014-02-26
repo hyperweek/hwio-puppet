@@ -117,6 +117,13 @@ class solr(
       group   => 'root',
       mode    => '0644';
 
+    '/etc/solr/conf/oldSchema.xml':
+      ensure  => present,
+      source  => 'puppet:///modules/solr/oldSchema.xml',
+      owner   => 'root',
+      group   => 'root',
+      mode    => '0644';
+
     '/etc/solr/conf/stopwords.txt':
       ensure  => present,
       source  => 'puppet:///modules/solr/stopwords.txt',
