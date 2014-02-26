@@ -8,7 +8,8 @@ define saas::instance(
   $hw_version=$::hw_version,
   $production_settings=undef,
   $rebuild_index=false,
-  $user=false) {
+  $user=false,
+  $schema='schema.xml',) {
 
   include uwsgi::params
 
@@ -106,6 +107,7 @@ define saas::instance(
   # Solr
   solr::core { $name:
     ensure => $ensure,
+    schema => $schema,
   }
 
   # Database configuration
@@ -141,10 +143,11 @@ define saas::instance(
     "${name}::db-sync-i18n":
       command => "${venv}/bin/python manage.py sync_translation_fields --noinput",
       cwd     => $app_dir,
+      onlyif  => "/bin/grep modeltranslation ${app_dir}hyperweek/conf/settings/default.py 2> /dev/null",
       refreshonly => !$is_present;
 
     "${name}::collectstatic":
-      command => "${venv}/bin/python manage.py collectstatic --noinput -i \"*.less\" --ignore-errors",
+      command => "${venv}/bin/python manage.py collectstatic --noinput -i \"*.less\"",
       cwd     => $app_dir,
       onlyif  => "/usr/bin/test -d ${app_dir}/public/static",
       user    => 'www-data',
