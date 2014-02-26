@@ -6,6 +6,6 @@ class uwsgi::params {
     $rundir = '/var/run/uwsgi'
     $logdir = '/var/log/uwsgi'
 
-    $workers = 1
+    $workers = 2
     $threads = 5
 }
