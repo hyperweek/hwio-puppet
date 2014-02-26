@@ -40,6 +40,11 @@ SENTRY_SITE = '<%= name %>'
 SENTRY_NAME = '<%= domain %>'
 
 
+## include local locales
+
+LOCALE_PATHS += (os.path.join('<%= project_dir %>', 'locale'), )
+
+
 ## Remove disabled apps
 
 if 'DISABLED_APPS' in locals():
