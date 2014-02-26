@@ -66,7 +66,7 @@ class nginx(
       require => File["/etc/nginx/sites-available/default"],
       notify  => Service['nginx'];
 
-    "/usr/share/nginx/html/index.html":
+    "/usr/share/nginx/www/index.html":
       ensure  => $ensure,
       source  => "puppet:///modules/nginx/index.html",
       require => File['/etc/nginx/sites-available/default'];
